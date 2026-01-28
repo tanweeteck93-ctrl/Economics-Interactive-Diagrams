@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Economic Models</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .slider-label { @apply text-sm font-medium text-gray-700; }
+        .slider-value { @apply text-sm font-semibold text-indigo-600; }
+        .info-label { @apply text-sm text-gray-500; }
+        .info-value { @apply text-sm font-bold text-gray-900; }
+        .profit-value { @apply text-lg font-bold text-green-600; }
+        .loss-value { @apply text-lg font-bold text-red-600; }
+        .dwl-value { @apply text-lg font-bold text-yellow-600; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="w-full bg-white shadow-sm border-b border-gray-200 p-4 mb-12 sticky top-0 z-50">
+        <div class="container mx-auto text-center space-x-6">
+            <a href="index.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Govt Intervention</a>
+            
+            <a href="market_power.html" class="text-indigo-600 font-bold transition-colors">Market Power</a>
+            
+            <a href="international_trade.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">International Trade</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Interactive Economic Models</h1>
+            <p class="text-md text-gray-600 mt-2">Explore firm behavior in Perfect Competition and Monopoly market structures.</p>
+        </header>
+
+        <!-- Perfect Competition Model -->
+        <div class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8 border-b pb-4">Perfect Competition Model</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Graph -->
+                <div class="w-full lg:w-2/3 bg-white p-4 rounded-xl shadow-lg border border-gray-200">
+                    <canvas id="pcCanvas"></canvas>
+                </div>
+                <!-- Controls and Info -->
+                <div class="w-full lg:w-1/3 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-blue-600 border-b pb-2">Market Price: <span class="font-mono">P = D = AR = MR</span></h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center"><label class="slider-label">Market Price (P)</label><span id="pcPriceValue" class="slider-value">60</span></div>
+                                <input id="pcPriceSlider" type="range" min="30" max="100" value="60" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-red-600 border-b pb-2">Cost Structure</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center"><label class="slider-label">Minimum Average Cost</label><span id="pcMinAcValue" class="slider-value">40</span></div>
+                                <input id="pcMinAc" type="range" min="20" max="80" value="40" class="w-full h-2 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-gray-700 border-b pb-2">Firm's Outcomes</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="info-label">Profit-Max Quantity (q*):</span> <span id="pcQuantity" class="info-value"></span></div>
+                            <div class="flex justify-between"><span class="info-label">Market Price (P*):</span> <span id="pcPrice" class="info-value"></span></div>
+                            <div class="flex justify-between"><span class="info-label">Average Cost (at q*):</span> <span id="pcAvgCost" class="info-value"></span></div>
+                            <hr class="my-2">
+                            <div class="text-center pt-2">
+                                <p class="info-label">Total Profit (P* - AC) * q*</p>
+                                <p id="pcTotalProfit" class="profit-value">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monopoly Model -->
+        <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8 border-b pb-4">Monopoly Model</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Graph -->
+                <div class="w-full lg:w-2/3 bg-white p-4 rounded-xl shadow-lg border border-gray-200">
+                    <canvas id="monopolyCanvas"></canvas>
+                </div>
+                <!-- Controls and Info -->
+                <div class="w-full lg:w-1/3 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-blue-600 border-b pb-2">Demand: <span class="font-mono">P = a - bQ</span></h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center"><label class="slider-label">P-Intercept (a)</label><span id="demandInterceptValue" class="slider-value">100</span></div>
+                                <input id="demandIntercept" type="range" min="80" max="120" value="100" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center"><label class="slider-label">Slope (b)</label><span id="demandSlopeValue" class="slider-value">1.0</span></div>
+                                <input id="demandSlope" type="range" min="0.5" max="2" value="1" step="0.1" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-red-600 border-b pb-2">Cost Structure</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center"><label class="slider-label">Minimum Average Cost</label><span id="minAcValue" class="slider-value">40</span></div>
+                                <input id="minAc" type="range" min="20" max="80" value="40" class="w-full h-2 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-gray-700 border-b pb-2">Market Outcomes</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="info-label">Profit-Max Quantity (Q*):</span> <span id="monoQuantity" class="info-value"></span></div>
+                            <div class="flex justify-between"><span class="info-label">Monopoly Price (P*):</span> <span id="monoPrice" class="info-value"></span></div>
+                            <div class="flex justify-between"><span class="info-label">Average Cost (at Q*):</span> <span id="avgCost" class="info-value"></span></div>
+                            <hr class="my-2">
+                            <div class="text-center pt-2">
+                                <p class="info-label">Total Profit (P* - AC) * Q*</p>
+                                <p id="totalProfit" class="profit-value">N/A</p>
+                            </div>
+                            <div class="text-center pt-2">
+                                <p class="info-label">Deadweight Loss</p>
+                                <p id="dwl" class="dwl-value">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Shared Constants ---
+        const padding = 50;
+        const maxQ = 100;
+        const maxP = 120;
+
+        // --- Generic Drawing Functions ---
+        function drawAxes(ctx, width, height) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+            ctx.moveTo(padding, padding / 2);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding / 2, height - padding);
+            ctx.stroke();
+            ctx.fillStyle = '#111827';
+            ctx.font = 'bold 14px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Price, Cost', padding, padding / 2 - 10);
+            ctx.fillText('Quantity (Q)', width / 2, height - padding / 4);
+        }
+
+        function drawCurve(ctx, toX, toY, equation, color, lineWidth, isDashed = false) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            if (isDashed) ctx.setLineDash([5, 5]);
+            let firstPoint = true;
+            for (let q = 0.1; q <= maxQ; q += 0.5) {
+                const p = equation(q);
+                if (p >= 0 && p <= maxP * 1.5) {
+                    const x = toX(q);
+                    const y = toY(p);
+                    if (firstPoint) { ctx.moveTo(x, y); firstPoint = false; } else { ctx.lineTo(x, y); }
+                }
+            }
+            ctx.stroke();
+            if (isDashed) ctx.setLineDash([]);
+        }
+
+        function drawLabel(ctx, toX, toY, text, equation, q_pos, color, y_offset = 0) {
+            const p_val = equation(q_pos);
+            if (p_val < 0 || p_val > maxP) return;
+            ctx.fillStyle = color;
+            ctx.font = 'bold 14px Inter';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, toX(q_pos) + 5, toY(p_val) + y_offset);
+        }
+        
+        function drawShadedArea(ctx, toX, toY, q, p1, p2, color) {
+            if (q <= 0) return;
+            const x = toX(q);
+            const y1 = toY(p1);
+            const y2 = toY(p2);
+            ctx.fillStyle = color;
+            ctx.fillRect(toX(0), Math.min(y1, y2), x - toX(0), Math.abs(y1 - y2));
+        }
+
+        function find_g_min(f, A, Q_min_shape) {
+            let min_g = Infinity;
+            for (let q = 1; q <= maxQ; q += 0.5) {
+                const g_val = A * Math.pow(q - Q_min_shape, 2) + (f / q);
+                if (g_val < min_g) { min_g = g_val; }
+            }
+            return min_g;
+        }
+
+        // --- Perfect Competition Model ---
+        const pcCanvas = document.getElementById('pcCanvas');
+        const pcCtx = pcCanvas.getContext('2d');
+        const pcPriceSlider = document.getElementById('pcPriceSlider');
+        const pcMinAcSlider = document.getElementById('pcMinAc');
+        const pcPriceValue = document.getElementById('pcPriceValue');
+        const pcMinAcValue = document.getElementById('pcMinAcValue');
+        const pcQuantityDisplay = document.getElementById('pcQuantity');
+        const pcPriceDisplay = document.getElementById('pcPrice');
+        const pcAvgCostDisplay = document.getElementById('pcAvgCost');
+        const pcTotalProfitDisplay = document.getElementById('pcTotalProfit');
+
+        let pcWidth, pcHeight;
+
+        const pcToX = (q) => padding + (q / maxQ) * (pcWidth - 2 * padding);
+        const pcToY = (p) => pcHeight - padding - (p / maxP) * (pcHeight - 2 * padding);
+
+        function setupPCCanvas() {
+            const container = pcCanvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            pcCanvas.width = rect.width * dpr;
+            pcCanvas.height = rect.width * dpr; // Square canvas
+            pcCanvas.style.width = `${rect.width}px`;
+            pcCanvas.style.height = `${rect.width}px`;
+            pcWidth = rect.width;
+            pcHeight = rect.width;
+            pcCtx.scale(dpr, dpr);
+            drawPC();
+        }
+
+        function drawPC() {
+            pcCtx.clearRect(0, 0, pcCanvas.width, pcCanvas.height);
+            const p_market = parseFloat(pcPriceSlider.value);
+            const min_ac_slider = parseFloat(pcMinAcSlider.value);
+            const f = 500; // Fixed cost is now constant
+
+            const A_shape = 0.015, Q_min_shape = 50;
+            pcPriceValue.textContent = p_market.toFixed(0);
+            pcMinAcValue.textContent = min_ac_slider.toFixed(0);
+
+            const g_min = find_g_min(f, A_shape, Q_min_shape);
+            const C_base = min_ac_slider - g_min;
+            const demandEq = q => p_market;
+            const mcEq = q => 3 * A_shape * q * q - 4 * A_shape * Q_min_shape * q + A_shape * Q_min_shape * Q_min_shape + C_base;
+            const acEq = q => (q > 0 ? f / q : Infinity) + A_shape * Math.pow(q - Q_min_shape, 2) + C_base;
+
+            const quadA = 3 * A_shape;
+            const quadB = -4 * A_shape * Q_min_shape;
+            const quadC = A_shape * Q_min_shape * Q_min_shape + C_base - p_market;
+            const discriminant = quadB * quadB - 4 * quadA * quadC;
+
+            let q_pc = -1;
+            if (discriminant >= 0) {
+                const r1 = (-quadB + Math.sqrt(discriminant)) / (2 * quadA);
+                q_pc = r1;
+            }
+
+            const ac_pc = acEq(q_pc);
+            const profit = (p_market - ac_pc) * q_pc;
+
+            if (q_pc > 0) {
+                const profitColor = profit > 0 ? 'rgba(74, 222, 128, 0.3)' : 'rgba(248, 113, 113, 0.3)';
+                drawShadedArea(pcCtx, pcToX, pcToY, q_pc, p_market, ac_pc, profitColor);
+            }
+
+            drawAxes(pcCtx, pcWidth, pcHeight);
+            drawCurve(pcCtx, pcToX, pcToY, demandEq, '#3b82f6', 3);
+            drawCurve(pcCtx, pcToX, pcToY, mcEq, '#ef4444', 3);
+            drawCurve(pcCtx, pcToX, pcToY, acEq, '#f97316', 3);
+            drawLabel(pcCtx, pcToX, pcToY, 'D=AR=MR', demandEq, maxQ - 20, '#3b82f6', -15); // Repositioned label
+            drawLabel(pcCtx, pcToX, pcToY, 'MC', mcEq, 75, '#ef4444', -10);
+            drawLabel(pcCtx, pcToX, pcToY, 'AC', acEq, maxQ - 15, '#f97316', 10);
+
+            if (q_pc > 0 && q_pc <= maxQ) {
+                const x = pcToX(q_pc);
+                const y = pcToY(p_market);
+                const y_ac = pcToY(ac_pc);
+                pcCtx.setLineDash([2, 3]);
+                pcCtx.strokeStyle = '#555';
+                pcCtx.beginPath(); pcCtx.moveTo(x, y); pcCtx.lineTo(x, pcToY(0)); pcCtx.stroke();
+                pcCtx.beginPath(); pcCtx.moveTo(x, y); pcCtx.lineTo(pcToX(0), y); pcCtx.stroke();
+                pcCtx.beginPath(); pcCtx.moveTo(x, y_ac); pcCtx.lineTo(pcToX(0), y_ac); pcCtx.stroke();
+                pcCtx.setLineDash([]);
+                pcCtx.beginPath(); pcCtx.fillStyle = '#166534'; pcCtx.arc(x, y, 5, 0, 2 * Math.PI); pcCtx.fill();
+                
+                // Draw numerical labels on axes
+                pcCtx.fillStyle = '#111827';
+                pcCtx.font = 'bold 12px Inter';
+                pcCtx.textAlign = 'center';
+                pcCtx.textBaseline = 'top';
+                pcCtx.fillText(q_pc.toFixed(1), x, pcToY(0) + 5);
+                pcCtx.textAlign = 'right';
+                pcCtx.textBaseline = 'middle';
+                pcCtx.fillText(p_market.toFixed(1), pcToX(0) - 5, y);
+                pcCtx.fillText(ac_pc.toFixed(1), pcToX(0) - 5, y_ac);
+            }
+
+            if (q_pc > 0 && q_pc < maxQ) {
+                pcQuantityDisplay.textContent = q_pc.toFixed(2);
+                pcPriceDisplay.textContent = p_market.toFixed(2);
+                pcAvgCostDisplay.textContent = ac_pc.toFixed(2);
+                pcTotalProfitDisplay.textContent = profit.toFixed(2);
+                pcTotalProfitDisplay.className = profit > 0 ? 'profit-value' : 'loss-value';
+            } else {
+                [pcQuantityDisplay, pcPriceDisplay, pcAvgCostDisplay, pcTotalProfitDisplay].forEach(el => el.textContent = 'N/A');
+                pcTotalProfitDisplay.className = 'profit-value';
+            }
+        }
+
+        // --- Monopoly Model ---
+        const monoCanvas = document.getElementById('monopolyCanvas');
+        const monoCtx = monoCanvas.getContext('2d');
+        const demandInterceptSlider = document.getElementById('demandIntercept');
+        const demandSlopeSlider = document.getElementById('demandSlope');
+        const minAcSlider = document.getElementById('minAc');
+        const demandInterceptValue = document.getElementById('demandInterceptValue');
+        const demandSlopeValue = document.getElementById('demandSlopeValue');
+        const minAcValue = document.getElementById('minAcValue');
+        const monoQuantityDisplay = document.getElementById('monoQuantity');
+        const monoPriceDisplay = document.getElementById('monoPrice');
+        const avgCostDisplay = document.getElementById('avgCost');
+        const totalProfitDisplay = document.getElementById('totalProfit');
+        const dwlDisplay = document.getElementById('dwl');
+
+        let monoWidth, monoHeight;
+
+        const monoToX = (q) => padding + (q / maxQ) * (monoWidth - 2 * padding);
+        const monoToY = (p) => monoHeight - padding - (p / maxP) * (monoHeight - 2 * padding);
+
+        function setupMonopolyCanvas() {
+            const container = monoCanvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            monoCanvas.width = rect.width * dpr;
+            monoCanvas.height = rect.width * dpr; // Square canvas
+            monoCanvas.style.width = `${rect.width}px`;
+            monoCanvas.style.height = `${rect.width}px`;
+            monoWidth = rect.width;
+            monoHeight = rect.width;
+            monoCtx.scale(dpr, dpr);
+            drawMonopoly();
+        }
+
+        function drawDWL(q_mono, q_opt, demandEq, mcEq, color) {
+            if (q_mono <= 0 || q_opt <= q_mono) return;
+            const p_mono = demandEq(q_mono);
+            const mc_mono = mcEq(q_mono);
+            const p_opt = mcEq(q_opt);
+            monoCtx.beginPath();
+            monoCtx.fillStyle = color;
+            monoCtx.moveTo(monoToX(q_mono), monoToY(p_mono));
+            monoCtx.lineTo(monoToX(q_mono), monoToY(mc_mono));
+            monoCtx.lineTo(monoToX(q_opt), monoToY(p_opt));
+            monoCtx.closePath();
+            monoCtx.fill();
+        }
+
+        function drawMonopoly() {
+            monoCtx.clearRect(0, 0, monoCanvas.width, monoCanvas.height);
+            const a = parseFloat(demandInterceptSlider.value);
+            const b = parseFloat(demandSlopeSlider.value);
+            const min_ac_slider = parseFloat(minAcSlider.value);
+            const f = 500; // Fixed cost is now constant
+            
+            const A_shape = 0.015, Q_min_shape = 50;
+            demandInterceptValue.textContent = a.toFixed(0);
+            demandSlopeValue.textContent = b.toFixed(1);
+            minAcValue.textContent = min_ac_slider.toFixed(0);
+
+            const g_min = find_g_min(f, A_shape, Q_min_shape);
+            const C_base = min_ac_slider - g_min;
+            const demandEq = q => a - b * q;
+            const mrEq = q => a - 2 * b * q;
+            const mcEq = q => 3 * A_shape * q * q - 4 * A_shape * Q_min_shape * q + A_shape * Q_min_shape * Q_min_shape + C_base;
+            const acEq = q => (q > 0 ? f / q : Infinity) + A_shape * Math.pow(q - Q_min_shape, 2) + C_base;
+            
+            const quadA_mono = 3 * A_shape;
+            const quadB_mono = 2 * b - 4 * A_shape * Q_min_shape;
+            const quadC_mono = A_shape * Q_min_shape * Q_min_shape + C_base - a;
+            const discriminant_mono = quadB_mono * quadB_mono - 4 * quadA_mono * quadC_mono;
+            
+            let q_mono = -1;
+            if (discriminant_mono >= 0) {
+                const r1 = (-quadB_mono + Math.sqrt(discriminant_mono)) / (2 * quadA_mono);
+                const r2 = (-quadB_mono - Math.sqrt(discriminant_mono)) / (2 * quadA_mono);
+                const slopeMC_r1 = 6 * A_shape * r1 - 4 * A_shape * Q_min_shape;
+                const slopeMR = -2 * b;
+                q_mono = slopeMC_r1 > slopeMR ? r1 : r2;
+            }
+
+            const quadB_opt = b - 4 * A_shape * Q_min_shape;
+            const quadC_opt = quadC_mono + a;
+            const discriminant_opt = quadB_opt * quadB_opt - 4 * quadA_mono * quadC_opt;
+            let q_opt = -1;
+            if (discriminant_opt >= 0) { q_opt = (-quadB_opt + Math.sqrt(discriminant_opt)) / (2 * quadA_mono); }
+
+            const p_mono = demandEq(q_mono);
+            const ac_mono = acEq(q_mono);
+            const profit = (p_mono - ac_mono) * q_mono;
+            const mc_at_q_mono = mcEq(q_mono);
+            const dwl = 0.5 * (p_mono - mc_at_q_mono) * (q_opt - q_mono);
+
+            if (q_mono > 0 && q_mono <= maxQ) {
+                const profitColor = profit > 0 ? 'rgba(74, 222, 128, 0.3)' : 'rgba(248, 113, 113, 0.3)';
+                drawShadedArea(monoCtx, monoToX, monoToY, q_mono, p_mono, ac_mono, profitColor);
+                if (q_opt > q_mono) { drawDWL(q_mono, q_opt, demandEq, mcEq, 'rgba(251, 191, 36, 0.4)'); }
+            }
+
+            drawAxes(monoCtx, monoWidth, monoHeight);
+            drawCurve(monoCtx, monoToX, monoToY, demandEq, '#3b82f6', 3);
+            drawCurve(monoCtx, monoToX, monoToY, mrEq, '#8b5cf6', 3);
+            drawCurve(monoCtx, monoToX, monoToY, mcEq, '#ef4444', 3);
+            drawCurve(monoCtx, monoToX, monoToY, acEq, '#f97316', 3);
+            drawLabel(monoCtx, monoToX, monoToY, 'D', demandEq, maxQ - 10, '#3b82f6');
+            drawLabel(monoCtx, monoToX, monoToY, 'MR', mrEq, maxQ / 2 - 2, '#8b5cf6', -10);
+            drawLabel(monoCtx, monoToX, monoToY, 'MC', mcEq, 75, '#ef4444', -10);
+            drawLabel(monoCtx, monoToX, monoToY, 'AC', acEq, maxQ - 15, '#f97316', 10);
+
+            if (q_mono > 0 && q_mono <= maxQ && p_mono > 0) {
+                const x = monoToX(q_mono);
+                const y_p = monoToY(p_mono);
+                const y_mc = monoToY(mcEq(q_mono));
+                const y_ac = monoToY(ac_mono);
+                monoCtx.setLineDash([2, 3]);
+                monoCtx.strokeStyle = '#555';
+                monoCtx.beginPath(); monoCtx.moveTo(x, y_p); monoCtx.lineTo(x, monoToY(0)); monoCtx.stroke();
+                monoCtx.beginPath(); monoCtx.moveTo(x, y_p); monoCtx.lineTo(monoToX(0), y_p); monoCtx.stroke();
+                monoCtx.beginPath(); monoCtx.moveTo(x, y_ac); monoCtx.lineTo(monoToX(0), y_ac); monoCtx.stroke();
+                monoCtx.setLineDash([]);
+                monoCtx.beginPath(); monoCtx.fillStyle = '#166534'; monoCtx.arc(x, y_p, 5, 0, 2 * Math.PI); monoCtx.fill();
+                monoCtx.beginPath(); monoCtx.fillStyle = '#991b1b'; monoCtx.arc(x, y_mc, 5, 0, 2 * Math.PI); monoCtx.fill();
+            
+                // Draw numerical labels on axes
+                monoCtx.fillStyle = '#111827';
+                monoCtx.font = 'bold 12px Inter';
+                monoCtx.textAlign = 'center';
+                monoCtx.textBaseline = 'top';
+                monoCtx.fillText(q_mono.toFixed(1), x, monoToY(0) + 5);
+                monoCtx.textAlign = 'right';
+                monoCtx.textBaseline = 'middle';
+                monoCtx.fillText(p_mono.toFixed(1), monoToX(0) - 5, y_p);
+                monoCtx.fillText(ac_mono.toFixed(1), monoToX(0) - 5, y_ac);
+            }
+
+            if (q_mono > 0 && q_mono < maxQ) {
+                monoQuantityDisplay.textContent = q_mono.toFixed(2);
+                monoPriceDisplay.textContent = p_mono.toFixed(2);
+                avgCostDisplay.textContent = ac_mono.toFixed(2);
+                totalProfitDisplay.textContent = profit.toFixed(2);
+                totalProfitDisplay.className = profit > 0 ? 'profit-value' : 'loss-value';
+                dwlDisplay.textContent = (dwl > 0 && q_opt > q_mono) ? dwl.toFixed(2) : '0.00';
+            } else {
+                [monoQuantityDisplay, monoPriceDisplay, avgCostDisplay, totalProfitDisplay, dwlDisplay].forEach(el => el.textContent = 'N/A');
+                totalProfitDisplay.className = 'profit-value';
+            }
+        }
+
+        // --- Event Listeners ---
+        [pcPriceSlider, pcMinAcSlider].forEach(slider => slider.addEventListener('input', drawPC));
+        [demandInterceptSlider, demandSlopeSlider, minAcSlider].forEach(slider => slider.addEventListener('input', drawMonopoly));
+        
+        window.addEventListener('resize', () => {
+            setupPCCanvas();
+            setupMonopolyCanvas();
+        });
+
+        // --- Initial Load ---
+        setupPCCanvas();
+        setupMonopolyCanvas();
+    </script>
+</body>
+</html>

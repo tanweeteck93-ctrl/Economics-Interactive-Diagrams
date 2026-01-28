@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Trade Models</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .label { font-size: 12px; fill: #4A5568; }
+        .axis-label { font-size: 14px; font-weight: 500; fill: #2D3748; }
+        .equilibrium-dot { stroke: #4A5568; stroke-width: 1.5px; }
+        .equilibrium-line { stroke-dasharray: 4 2; stroke-width: 1px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col items-center min-h-screen pb-12">
+
+    <nav class="w-full bg-white shadow-sm border-b border-gray-200 p-4 mb-12 sticky top-0 z-50">
+        <div class="container mx-auto text-center space-x-6">
+            <a href="index.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Govt Intervention</a>
+            <a href="market_power.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Market Power</a>
+            <a href="international_trade.html" class="text-indigo-600 font-bold transition-colors">International Trade</a>
+        </div>
+    </nav>
+
+    <!-- Diagram 1: Tariff -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Tariff Diagram</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the tariff amount and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg-col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Tariff Amount Slider -->
+                <div class="mb-6">
+                    <label for="tariffSlider" class="block font-medium text-gray-700 mb-2">Tariff Amount</label>
+                    <input type="range" id="tariffSlider" min="0" max="80" value="15" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Tariff: $<span id="tariffValue">15.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Government Revenue</span>
+                             <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-tariff" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-tariff"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagram 2: Quota -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Quota Diagram</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the quota amount and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg-col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Quota Amount Slider -->
+                <div class="mb-6">
+                    <label for="quotaSlider" class="block font-medium text-gray-700 mb-2">Quota Amount</label>
+                    <input type="range" id="quotaSlider" min="0" max="40" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Quota: <span id="quotaValue">20</span> units</div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleQuota" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleQuota" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleQuota" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculationsQuota" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-quota" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-quota"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagram 3: Production Subsidy -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Production Subsidy Diagram</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the subsidy amount to see the impact on welfare and production.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg-col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Subsidy Amount Slider -->
+                <div class="mb-6">
+                    <label for="subsidySlider" class="block font-medium text-gray-700 mb-2">Subsidy Amount</label>
+                    <input type="range" id="subsidySlider" min="0" max="50" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Subsidy: $<span id="subsidyValue">20.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Government Expenditure</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggleSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculationsSubsidy" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-subsidy" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-subsidy"></svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Diagram 4: Export Subsidy -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Export Subsidy Diagram</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the subsidy amount to see how it raises the domestic price and impacts welfare.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg-col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Subsidy Amount Slider -->
+                <div class="mb-6">
+                    <label for="exportSubsidySlider" class="block font-medium text-gray-700 mb-2">Subsidy Amount</label>
+                    <input type="range" id="exportSubsidySlider" min="0" max="40" value="15" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Subsidy: $<span id="exportSubsidyValue">15.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleExportSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleExportSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Government Expenditure</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggleExportSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleExportSubsidy" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculationsExportSubsidy" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-export-subsidy" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-export-subsidy"></svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- TARIFF DIAGRAM SETUP ---
+            function setupTariffDiagram() {
+                const container = d3.select("#diagram-container-tariff");
+                if (!container.node()) return;
+                const width = Math.min(600, container.node().getBoundingClientRect().width);
+                const height = width * 0.8;
+                const margin = { top: 20, right: 30, bottom: 80, left: 50 };
+
+                const svg = d3.select("#diagram-tariff")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .style("max-width", "100%")
+                    .style("height", "auto");
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                const xScale = d3.scaleLinear().domain([0, 120]).range([0, chartWidth]);
+                const yScale = d3.scaleLinear().domain([0, 120]).range([chartHeight, 0]);
+
+                const demand = p => 110 - p;
+                const supply = p => p - 10;
+                const worldPrice = 40;
+                
+                const equilibriumPrice = 60;
+                const maxTariff = equilibriumPrice - worldPrice;
+
+                const tariffSlider = document.getElementById('tariffSlider');
+                tariffSlider.max = maxTariff;
+                if (+tariffSlider.value > maxTariff) {
+                    tariffSlider.value = maxTariff;
+                }
+                const tariffValueSpan = document.getElementById('tariffValue');
+                const csToggle = document.getElementById('csToggle');
+                const psToggle = document.getElementById('psToggle');
+                const govToggle = document.getElementById('govToggle');
+                const wlToggle = document.getElementById('wlToggle');
+                const calculationsDiv = document.getElementById('calculations');
+
+                const xAxis = d3.axisBottom(xScale).ticks(6);
+                const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d => `$${d}`);
+                g.append("g").attr("transform", `translate(0,${chartHeight})`).call(xAxis);
+                g.append("g").call(yAxis);
+                g.append("text").attr("x", chartWidth).attr("y", chartHeight + 40).attr("text-anchor", "end").text("Quantity");
+                g.append("text")
+                    .attr("x", 5).attr("y", -8).attr("text-anchor", "start").text("Price");
+
+                g.append("line").attr("x1", xScale(demand(110))).attr("y1", yScale(110)).attr("x2", xScale(demand(0))).attr("y2", yScale(0)).attr("stroke", "#3B82F6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(demand(10))).attr("y", yScale(10)).text("D").attr("fill", "#3B82F6").attr("font-weight", "bold");
+                g.append("line").attr("x1", xScale(supply(10))).attr("y1", yScale(10)).attr("x2", xScale(supply(120))).attr("y2", yScale(120)).attr("stroke", "#8B5CF6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(supply(110)) - 10).attr("y", yScale(110)).text("S").attr("fill", "#8B5CF6").attr("font-weight", "bold");
+                
+                g.append("line").attr("x1", 0).attr("y1", yScale(worldPrice)).attr("x2", chartWidth).attr("y2", yScale(worldPrice)).attr("stroke", "#10B981").attr("stroke-width", 2);
+                g.append("text").attr("x", chartWidth).attr("y", yScale(worldPrice) - 5).text("World Supply").attr("fill", "#10B981").attr("font-size", "12px").attr("text-anchor", "end");
+
+                const tariffSupplyLine = g.append("line").attr("stroke", "#F59E0B").attr("stroke-width", 2);
+                const tariffSupplyLabel = g.append("text").attr("fill", "#F59E0B").attr("font-size", "12px").text("World Supply + Tariff").attr("text-anchor", "end");
+                
+                const groupLines = g.append("g").attr("class", "lines-group");
+                const groupAreas = g.append("g").attr("class", "areas-group");
+
+                function updateDiagram() {
+                    const tariff = +tariffSlider.value;
+                    tariffValueSpan.textContent = tariff.toFixed(2);
+                    const priceWithTariff = worldPrice + tariff;
+                    const qd_world = demand(worldPrice);
+                    const qs_world = supply(worldPrice);
+                    const qd_tariff = demand(priceWithTariff);
+                    const qs_tariff = supply(priceWithTariff);
+                    
+                    tariffSupplyLine.attr("x1", 0).attr("y1", yScale(priceWithTariff)).attr("x2", chartWidth).attr("y2", yScale(priceWithTariff));
+                    tariffSupplyLabel.attr("x", chartWidth).attr("y", yScale(priceWithTariff) - 5);
+
+                    groupLines.selectAll("*").remove();
+                    groupAreas.selectAll("*").remove();
+
+                    groupLines.append("line").attr("x1", 0).attr("y1", yScale(priceWithTariff)).attr("x2", xScale(qd_tariff)).attr("y2", yScale(priceWithTariff)).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("line").attr("x1", xScale(qd_tariff)).attr("y1", yScale(priceWithTariff)).attr("x2", xScale(qd_tariff)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(priceWithTariff)+5).text(`$${priceWithTariff.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+                    groupLines.append("text").attr("x", xScale(qd_tariff)).attr("y", chartHeight + 20).text(`${qd_tariff.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    groupLines.append("line").attr("x1", xScale(qs_tariff)).attr("y1", yScale(priceWithTariff)).attr("x2", xScale(qs_tariff)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_tariff)).attr("y", chartHeight + 20).text(`${qs_tariff.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    groupLines.append("line").attr("x1", 0).attr("y1", yScale(worldPrice)).attr("x2", xScale(qd_world)).attr("y2", yScale(worldPrice)).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(worldPrice)+5).text(`$${worldPrice.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+                    
+                    if (qd_tariff > qs_tariff) {
+                        const importYPosition = chartHeight + 35;
+                        groupLines.append("line").attr("x1", xScale(qs_tariff)).attr("y1", importYPosition).attr("x2", xScale(qd_tariff)).attr("y2", importYPosition).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qs_tariff)).attr("y1", importYPosition - 3).attr("x2", xScale(qs_tariff)).attr("y2", importYPosition + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qd_tariff)).attr("y1", importYPosition - 3).attr("x2", xScale(qd_tariff)).attr("y2", importYPosition + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("text").attr("x", xScale(qs_tariff + (qd_tariff - qs_tariff) / 2)).attr("y", importYPosition - 5).attr("text-anchor", "middle").attr("font-size", "12px").attr("fill", "black").text("Imports");
+                    }
+                    
+                    const pMax = 110;
+                    const csPoints = [{x: xScale(0), y: yScale(pMax)}, {x: xScale(qd_tariff), y: yScale(priceWithTariff)}, {x: xScale(0), y: yScale(priceWithTariff)}];
+                    groupAreas.append("polygon").attr("points", csPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#3B82F6").attr("opacity", csToggle.checked ? 0.3 : 0);
+                    const psPoints = [{x: xScale(0), y: yScale(10)}, {x: xScale(qs_tariff), y: yScale(priceWithTariff)}, {x: xScale(0), y: yScale(priceWithTariff)}];
+                    groupAreas.append("polygon").attr("points", psPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#8B5CF6").attr("opacity", psToggle.checked ? 0.3 : 0);
+                    const govPoints = [{x: xScale(qs_tariff), y: yScale(worldPrice)}, {x: xScale(qd_tariff), y: yScale(worldPrice)}, {x: xScale(qd_tariff), y: yScale(priceWithTariff)}, {x: xScale(qs_tariff), y: yScale(priceWithTariff)}];
+                    groupAreas.append("polygon").attr("points", govPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#10B981").attr("opacity", govToggle.checked ? 0.4 : 0);
+                    const wl1Points = [{x: xScale(qs_world), y: yScale(worldPrice)}, {x: xScale(qs_tariff), y: yScale(worldPrice)}, {x: xScale(qs_tariff), y: yScale(priceWithTariff)}];
+                    groupAreas.append("polygon").attr("points", wl1Points.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+                    const wl2Points = [{x: xScale(qd_tariff), y: yScale(priceWithTariff)}, {x: xScale(qd_world), y: yScale(worldPrice)}, {x: xScale(qd_tariff), y: yScale(worldPrice)}];
+                    groupAreas.append("polygon").attr("points", wl2Points.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+
+                    updateCalculations();
+                }
+                
+                function updateCalculations() {
+                    const tariff = +tariffSlider.value;
+                    const priceWithTariff = worldPrice + tariff;
+                    const qd_tariff = demand(priceWithTariff);
+                    const qs_tariff = supply(priceWithTariff);
+                    calculationsDiv.innerHTML = '';
+                    let hasContent = false;
+                    const formatCurrency = (value) => `$${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                    
+                    if(csToggle.checked) {
+                        hasContent = true;
+                        const cs = 0.5 * (110 - priceWithTariff) * qd_tariff;
+                        const formula = `0.5 * (${110} - ${priceWithTariff.toFixed(0)}) * ${qd_tariff.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-blue-600">Consumer Surplus:</span> <span>${formatCurrency(cs)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(psToggle.checked) {
+                        hasContent = true;
+                        const ps = 0.5 * (priceWithTariff - 10) * qs_tariff;
+                        const formula = `0.5 * (${priceWithTariff.toFixed(0)} - 10) * ${qs_tariff.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-purple-600">Producer Surplus:</span> <span>${formatCurrency(ps)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(govToggle.checked) {
+                        hasContent = true;
+                        const imports = qd_tariff - qs_tariff;
+                        const revenue = imports > 0 ? imports * tariff : 0;
+                        const formula = `(${qd_tariff.toFixed(0)} - ${qs_tariff.toFixed(0)}) * ${tariff.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-green-600">Govt Revenue:</span> <span>${formatCurrency(revenue)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(wlToggle.checked) {
+                        hasContent = true;
+                        const wl1 = 0.5 * (qs_tariff - supply(worldPrice)) * tariff;
+                        const wl2 = 0.5 * (demand(worldPrice) - qd_tariff) * tariff;
+                        const totalWl = wl1 + wl2 > 0 ? wl1 + wl2 : 0;
+                        const formula = `0.5 * (${qs_tariff.toFixed(0)} - ${supply(worldPrice).toFixed(0)}) * ${tariff.toFixed(0)} + 0.5 * (${demand(worldPrice).toFixed(0)} - ${qd_tariff.toFixed(0)}) * ${tariff.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-red-600">Welfare Loss:</span> <span>${formatCurrency(totalWl)}</span></div><span class="text-xs text-gray-500 text-right break-all">Formula: ${formula}</span></div>`;
+                    }
+
+                    if(!hasContent) {
+                        calculationsDiv.innerHTML = '<p class="text-gray-400">Toggle an area to see details.</p>';
+                    }
+                }
+
+                tariffSlider.addEventListener('input', updateDiagram);
+                [csToggle, psToggle, govToggle, wlToggle].forEach(toggle => {
+                    toggle.addEventListener('change', updateDiagram);
+                });
+                updateDiagram();
+            }
+
+            // --- QUOTA DIAGRAM SETUP ---
+            function setupQuotaDiagram() {
+                const container = d3.select("#diagram-container-quota");
+                 if (!container.node()) return;
+                const width = Math.min(600, container.node().getBoundingClientRect().width);
+                const height = width * 0.8;
+                const margin = { top: 20, right: 30, bottom: 80, left: 50 };
+
+                const svg = d3.select("#diagram-quota")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .style("max-width", "100%")
+                    .style("height", "auto");
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                const xScale = d3.scaleLinear().domain([0, 120]).range([0, chartWidth]);
+                const yScale = d3.scaleLinear().domain([0, 120]).range([chartHeight, 0]);
+
+                const demand = p => 110 - p;
+                const supply = p => p - 10;
+                const worldPrice = 40;
+
+                const quotaSlider = document.getElementById('quotaSlider');
+                const quotaValueSpan = document.getElementById('quotaValue');
+                const csToggle = document.getElementById('csToggleQuota');
+                const psToggle = document.getElementById('psToggleQuota');
+                const wlToggle = document.getElementById('wlToggleQuota');
+                const calculationsDiv = document.getElementById('calculationsQuota');
+
+                const xAxis = d3.axisBottom(xScale).ticks(6);
+                const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d => `$${d}`);
+                g.append("g").attr("transform", `translate(0,${chartHeight})`).call(xAxis);
+                g.append("g").call(yAxis);
+                g.append("text").attr("x", chartWidth).attr("y", chartHeight + 40).attr("text-anchor", "end").text("Quantity");
+                g.append("text")
+                    .attr("x", 5).attr("y", -8).attr("text-anchor", "start").text("Price");
+                
+                g.append("line").attr("x1", xScale(demand(110))).attr("y1", yScale(110)).attr("x2", xScale(demand(0))).attr("y2", yScale(0)).attr("stroke", "#3B82F6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(demand(10))).attr("y", yScale(10)).text("D").attr("fill", "#3B82F6").attr("font-weight", "bold");
+                const domesticSupplyLine = g.append("line").attr("x1", xScale(supply(10))).attr("y1", yScale(10)).attr("x2", xScale(supply(120))).attr("y2", yScale(120)).attr("stroke", "#8B5CF6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(supply(95)) - 10).attr("y", yScale(95)).text("S (Domestic)").attr("fill", "#8B5CF6").attr("font-weight", "bold").attr("font-size", "12px").attr("text-anchor", "end");
+
+                g.append("line").attr("x1", 0).attr("y1", yScale(worldPrice)).attr("x2", chartWidth).attr("y2", yScale(worldPrice)).attr("stroke", "#10B981").attr("stroke-width", 2);
+                g.append("text").attr("x", chartWidth).attr("y", yScale(worldPrice) - 5).text("World Supply").attr("fill", "#10B981").attr("font-size", "12px").attr("text-anchor", "end");
+
+                const quotaSupplyLine = g.append("line").attr("stroke", "#F59E0B").attr("stroke-width", 2);
+                const quotaSupplyLabel = g.append("text").attr("fill", "#F59E0B").attr("font-size", "12px").text("S + Quota").attr("text-anchor", "start").attr("font-weight", "bold");
+
+                const groupLines = g.append("g").attr("class", "lines-group");
+                const groupAreas = g.append("g").attr("class", "areas-group");
+
+                function updateDiagram() {
+                    const quota = +quotaSlider.value;
+                    quotaValueSpan.textContent = quota.toFixed(0);
+                    
+                    // S_dom + quota = D_dom  =>  (P-10) + quota = 110 - P => 2P = 120 - quota => P_quota = 60 - quota/2
+                    const priceWithQuota = 60 - quota / 2;
+
+                    const qd_world = demand(worldPrice);
+                    const qs_world = supply(worldPrice);
+                    const qd_quota = demand(priceWithQuota);
+                    const qs_quota = supply(priceWithQuota);
+                    
+                    const supplyWithQuota = p => (p - 10) + quota;
+                    quotaSupplyLine
+                        .attr("x1", xScale(supplyWithQuota(worldPrice)))
+                        .attr("y1", yScale(worldPrice))
+                        .attr("x2", xScale(supplyWithQuota(120)))
+                        .attr("y2", yScale(120));
+
+                    quotaSupplyLabel
+                        .attr("x", xScale(supplyWithQuota(95)) + 10)
+                        .attr("y", yScale(95));
+
+                    groupLines.selectAll("*").remove();
+                    groupAreas.selectAll("*").remove();
+
+                    groupLines.append("line").attr("x1", 0).attr("y1", yScale(priceWithQuota)).attr("x2", xScale(qd_quota)).attr("y2", yScale(priceWithQuota)).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("line").attr("x1", xScale(qd_quota)).attr("y1", yScale(priceWithQuota)).attr("x2", xScale(qd_quota)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(priceWithQuota)+5).text(`$${priceWithQuota.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+                    groupLines.append("text").attr("x", xScale(qd_quota)).attr("y", chartHeight + 15).text(`${qd_quota.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+
+                    groupLines.append("line").attr("x1", xScale(qs_quota)).attr("y1", yScale(priceWithQuota)).attr("x2", xScale(qs_quota)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_quota)).attr("y", chartHeight + 15).text(`${qs_quota.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+
+                    // Quota indicator
+                    const quotaArrowY = yScale(priceWithQuota) + 15;
+                    const quotaStartX = xScale(qs_quota);
+                    const quotaEndX = xScale(qd_quota);
+                    if (quota > 0) {
+                        groupLines.append("line").attr("x1", quotaStartX).attr("y1", quotaArrowY).attr("x2", quotaEndX).attr("y2", quotaArrowY).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", quotaStartX).attr("y1", quotaArrowY - 3).attr("x2", quotaStartX).attr("y2", quotaArrowY + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", quotaEndX).attr("y1", quotaArrowY - 3).attr("x2", quotaEndX).attr("y2", quotaArrowY + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("text")
+                            .attr("x", (quotaStartX + quotaEndX) / 2)
+                            .attr("y", quotaArrowY - 5)
+                            .attr("text-anchor", "middle")
+                            .attr("font-size", "12px")
+                            .text("Quota");
+                    }
+
+                    const pMax = 110;
+                    const csPoints = [{x: xScale(0), y: yScale(pMax)}, {x: xScale(qd_quota), y: yScale(priceWithQuota)}, {x: xScale(0), y: yScale(priceWithQuota)}];
+                    groupAreas.append("polygon").attr("points", csPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#3B82F6").attr("opacity", csToggle.checked ? 0.3 : 0);
+                    
+                    const psPoints = [{x: xScale(0), y: yScale(10)}, {x: xScale(qs_quota), y: yScale(priceWithQuota)}, {x: xScale(0), y: yScale(priceWithQuota)}];
+                    groupAreas.append("polygon").attr("points", psPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#8B5CF6").attr("opacity", psToggle.checked ? 0.3 : 0);
+                    
+                    // Welfare Loss consists of 3 areas: d, e, f from reference
+                    // d: production inefficiency
+                    const wl_d = [{x: xScale(qs_world), y: yScale(worldPrice)}, {x: xScale(qs_quota), y: yScale(worldPrice)}, {x: xScale(qs_quota), y: yScale(priceWithQuota)}];
+                     groupAreas.append("polygon").attr("points", wl_d.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+                    
+                    // e: quota rent to foreigners
+                    const wl_e = [{x: xScale(qs_quota), y: yScale(worldPrice)}, {x: xScale(qd_quota), y: yScale(worldPrice)}, {x: xScale(qd_quota), y: yScale(priceWithQuota)}, {x: xScale(qs_quota), y: yScale(priceWithQuota)}];
+                    groupAreas.append("polygon").attr("points", wl_e.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+                    
+                    // f: consumption inefficiency
+                    const wl_f = [{x: xScale(qd_quota), y: yScale(priceWithQuota)}, {x: xScale(qd_world), y: yScale(worldPrice)}, {x: xScale(qd_quota), y: yScale(worldPrice)}];
+                    groupAreas.append("polygon").attr("points", wl_f.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+
+                    updateCalculations();
+                }
+
+                function updateCalculations() {
+                    const quota = +quotaSlider.value;
+                    const priceWithQuota = 60 - quota / 2;
+                    const qd_quota = demand(priceWithQuota);
+                    const qs_quota = supply(priceWithQuota);
+                    const qs_world = supply(worldPrice);
+                    const qd_world = demand(worldPrice);
+
+                    calculationsDiv.innerHTML = '';
+                    let hasContent = false;
+                    const formatCurrency = (value) => `$${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                    
+                    if(csToggle.checked) {
+                        hasContent = true;
+                        const cs = 0.5 * (110 - priceWithQuota) * qd_quota;
+                        const formula = `0.5 * (${110} - ${priceWithQuota.toFixed(0)}) * ${qd_quota.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-blue-600">Consumer Surplus:</span> <span>${formatCurrency(cs)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(psToggle.checked) {
+                        hasContent = true;
+                        const ps = 0.5 * (priceWithQuota - 10) * qs_quota;
+                        const formula = `0.5 * (${priceWithQuota.toFixed(0)} - 10) * ${qs_quota.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-purple-600">Producer Surplus:</span> <span>${formatCurrency(ps)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                     if(wlToggle.checked) {
+                        hasContent = true;
+                        const price_diff = priceWithQuota - worldPrice;
+                        const wl_d_val = 0.5 * (qs_quota - qs_world) * price_diff;
+                        const wl_e_val = (qd_quota - qs_quota) * price_diff;
+                        const wl_f_val = 0.5 * (qd_world - qd_quota) * price_diff;
+                        const totalWl = wl_d_val + wl_e_val + wl_f_val;
+
+                        const formula = `[0.5*(${qs_quota.toFixed(0)}-${qs_world.toFixed(0)})*${price_diff.toFixed(0)}] + [(${qd_quota.toFixed(0)}-${qs_quota.toFixed(0)})*${price_diff.toFixed(0)}] + [0.5*(${qd_world.toFixed(0)}-${qd_quota.toFixed(0)})*${price_diff.toFixed(0)}]`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-red-600">Welfare Loss:</span> <span>${formatCurrency(totalWl)}</span></div><span class="text-xs text-gray-500 text-right break-all">Formula: ${formula}</span></div>`;
+                    }
+
+                    if(!hasContent) {
+                        calculationsDiv.innerHTML = '<p class="text-gray-400">Toggle an area to see details.</p>';
+                    }
+                }
+
+                quotaSlider.addEventListener('input', updateDiagram);
+                [csToggle, psToggle, wlToggle].forEach(toggle => {
+                    toggle.addEventListener('change', updateDiagram);
+                });
+                updateDiagram();
+            }
+
+            // --- PRODUCTION SUBSIDY DIAGRAM SETUP ---
+            function setupSubsidyDiagram() {
+                const container = d3.select("#diagram-container-subsidy");
+                if (!container.node()) return;
+                const width = Math.min(600, container.node().getBoundingClientRect().width);
+                const height = width * 0.8;
+                const margin = { top: 20, right: 30, bottom: 100, left: 50 };
+
+                const svg = d3.select("#diagram-subsidy")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .style("max-width", "100%")
+                    .style("height", "auto");
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                const xScale = d3.scaleLinear().domain([0, 120]).range([0, chartWidth]);
+                const yScale = d3.scaleLinear().domain([0, 120]).range([chartHeight, 0]);
+
+                const demand = p => 110 - p;
+                const supply = p => p - 10;
+                const supplyInverse = q => q + 10;
+                const worldPrice = 40;
+
+                const subsidySlider = document.getElementById('subsidySlider');
+                const subsidyValueSpan = document.getElementById('subsidyValue');
+                const csToggle = document.getElementById('csToggleSubsidy');
+                const psToggle = document.getElementById('psToggleSubsidy');
+                const govToggle = document.getElementById('govToggleSubsidy');
+                const wlToggle = document.getElementById('wlToggleSubsidy');
+                const calculationsDiv = document.getElementById('calculationsSubsidy');
+
+                const xAxis = d3.axisBottom(xScale).ticks(6);
+                const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d => `$${d}`);
+                g.append("g").attr("transform", `translate(0,${chartHeight})`).call(xAxis);
+                g.append("g").call(yAxis);
+                g.append("text").attr("x", chartWidth).attr("y", chartHeight + 40).attr("text-anchor", "end").text("Quantity");
+                g.append("text")
+                    .attr("x", 5).attr("y", -8).attr("text-anchor", "start").text("Price");
+
+                // Curves
+                g.append("line").attr("x1", xScale(demand(110))).attr("y1", yScale(110)).attr("x2", xScale(demand(0))).attr("y2", yScale(0)).attr("stroke", "#3B82F6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(demand(5)) + 5).attr("y", yScale(5)).text("D").attr("fill", "#3B82F6").attr("font-weight", "bold").attr("font-size", "14px");
+                g.append("line").attr("x1", xScale(supply(10))).attr("y1", yScale(10)).attr("x2", xScale(supply(120))).attr("y2", yScale(120)).attr("stroke", "#8B5CF6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(supply(115)) - 10).attr("y", yScale(115)).text("Sd").attr("fill", "#8B5CF6").attr("font-weight", "bold").attr("font-size", "14px").attr("text-anchor", "end");
+                
+                g.append("line").attr("x1", 0).attr("y1", yScale(worldPrice)).attr("x2", chartWidth).attr("y2", yScale(worldPrice)).attr("stroke", "#10B981").attr("stroke-width", 2);
+                g.append("text").attr("x", chartWidth).attr("y", yScale(worldPrice) - 5).text("World Supply").attr("fill", "#10B981").attr("font-size", "12px").attr("text-anchor", "end");
+
+                const subsidizedSupplyLine = g.append("line").attr("stroke", "#F59E0B").attr("stroke-width", 2);
+                const subsidizedSupplyLabel = g.append("text").attr("fill", "#F59E0B").attr("font-size", "14px").text("Ss").attr("font-weight", "bold");
+                
+                const groupLines = g.append("g");
+                const groupAreas = g.append("g");
+
+                function updateDiagram() {
+                    const subsidy = +subsidySlider.value;
+                    subsidyValueSpan.textContent = subsidy.toFixed(2);
+                    
+                    const qs_world = supply(worldPrice);
+                    const qd_world = demand(worldPrice);
+                    const qs_subsidy = supply(worldPrice + subsidy);
+                    const producerPrice = worldPrice + subsidy;
+
+                    // Logic for drawing the subsidized supply curve
+                    let start_q, start_p;
+                    if (subsidy > 10) { // If subsidy is larger than the initial price intercept
+                        start_q = subsidy - 10;
+                        start_p = 0;
+                    } else {
+                        start_q = 0;
+                        start_p = 10 - subsidy;
+                    }
+                    const end_q = supply(120); // 110
+                    const end_p = 120 - subsidy;
+
+                    subsidizedSupplyLine
+                         .attr("x1", xScale(start_q))
+                         .attr("y1", yScale(start_p))
+                         .attr("x2", xScale(end_q))
+                         .attr("y2", yScale(end_p));
+
+                    subsidizedSupplyLabel
+                         .attr("x", xScale(end_q) + 5)
+                         .attr("y", yScale(end_p));
+
+                    groupLines.selectAll("*").remove();
+                    groupAreas.selectAll("*").remove();
+
+                    // --- Lines and labels for quantities and prices ---
+                    // Qd
+                    groupLines.append("line").attr("x1", xScale(qd_world)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qd_world)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qd_world)).attr("y", chartHeight + 15).text(`${qd_world.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+
+                    // Qs (before subsidy)
+                    groupLines.append("line").attr("x1", xScale(qs_world)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qs_world)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_world)).attr("y", chartHeight + 15).text(`${qs_world.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    
+                    // Qs' (after subsidy)
+                    groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qs_subsidy)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_subsidy)).attr("y", chartHeight + 15).text(`${qs_subsidy.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    
+                    // Producer price line
+                    groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qs_subsidy)).attr("y2", yScale(producerPrice)).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", yScale(producerPrice)).attr("x2", 0).attr("y2", yScale(producerPrice)).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(producerPrice) + 5).text(`$${producerPrice.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+
+                    // --- Import level indicators ---
+                    const importsBefore = qd_world - qs_world;
+                    if (importsBefore > 0) {
+                        const importY1 = chartHeight + 35;
+                        groupLines.append("line").attr("x1", xScale(qs_world)).attr("y1", importY1).attr("x2", xScale(qd_world)).attr("y2", importY1).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qs_world)).attr("y1", importY1 - 3).attr("x2", xScale(qs_world)).attr("y2", importY1 + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qd_world)).attr("y1", importY1 - 3).attr("x2", xScale(qd_world)).attr("y2", importY1 + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("text").attr("x", xScale(qs_world + importsBefore / 2)).attr("y", importY1 - 5).attr("text-anchor", "middle").attr("font-size", "12px").text("Imports before subsidy");
+                    }
+
+                    const importsAfter = qd_world - qs_subsidy;
+                    if (importsAfter > 0) {
+                        const importY2 = chartHeight + 55;
+                        groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", importY2).attr("x2", xScale(qd_world)).attr("y2", importY2).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", importY2 - 3).attr("x2", xScale(qs_subsidy)).attr("y2", importY2 + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("line").attr("x1", xScale(qd_world)).attr("y1", importY2 - 3).attr("x2", xScale(qd_world)).attr("y2", importY2 + 3).attr("stroke", "black").attr("stroke-width", 1);
+                        groupLines.append("text").attr("x", xScale(qs_subsidy + importsAfter / 2)).attr("y", importY2 - 5).attr("text-anchor", "middle").attr("font-size", "12px").text("Imports after subsidy");
+                    }
+
+                    // --- Areas ---
+                    const pMax = 110;
+                    const csPoints = [{x: xScale(0), y: yScale(pMax)}, {x: xScale(qd_world), y: yScale(worldPrice)}, {x: xScale(0), y: yScale(worldPrice)}];
+                    groupAreas.append("polygon").attr("points", csPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#3B82F6").attr("opacity", csToggle.checked ? 0.3 : 0);
+                    
+                    const psPoints = [
+                        {x: xScale(0), y: yScale(10)},
+                        {x: xScale(qs_subsidy), y: yScale(supplyInverse(qs_subsidy))},
+                        {x: xScale(0), y: yScale(supplyInverse(qs_subsidy))}
+                    ];
+                    groupAreas.append("polygon").attr("points", psPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#8B5CF6").attr("opacity", psToggle.checked ? 0.3 : 0);
+
+                    const govExpPoints = [
+                        {x: xScale(0), y: yScale(worldPrice)},
+                        {x: xScale(qs_subsidy), y: yScale(worldPrice)},
+                        {x: xScale(qs_subsidy), y: yScale(producerPrice)},
+                        {x: xScale(0), y: yScale(producerPrice)}
+                    ];
+                     groupAreas.append("polygon").attr("points", govExpPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#10B981").attr("opacity", govToggle.checked ? 0.4 : 0).attr("stroke", "none");
+
+                    const wlPoints = [
+                        {x: xScale(qs_world), y: yScale(worldPrice)},
+                        {x: xScale(qs_subsidy), y: yScale(worldPrice)},
+                        {x: xScale(qs_subsidy), y: yScale(supplyInverse(qs_subsidy))}
+                    ];
+                    groupAreas.append("polygon").attr("points", wlPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+
+                    updateCalculations();
+                }
+
+                function updateCalculations() {
+                    const subsidy = +subsidySlider.value;
+                    const qs_world = supply(worldPrice);
+                    const qd_world = demand(worldPrice);
+                    const qs_subsidy = supply(worldPrice + subsidy);
+
+                    calculationsDiv.innerHTML = '';
+                    let hasContent = false;
+                    const formatCurrency = (value) => `$${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                    
+                    if(csToggle.checked) {
+                        hasContent = true;
+                        const cs = 0.5 * (110 - worldPrice) * qd_world;
+                        const formula = `0.5 * (${110} - ${worldPrice}) * ${qd_world.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-blue-600">Consumer Surplus:</span> <span>${formatCurrency(cs)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(psToggle.checked) {
+                        hasContent = true;
+                        const ps = 0.5 * (worldPrice + subsidy - 10) * qs_subsidy;
+                        const formula = `0.5 * (${worldPrice + subsidy} - 10) * ${qs_subsidy.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-purple-600">Producer Surplus:</span> <span>${formatCurrency(ps)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(govToggle.checked) {
+                         hasContent = true;
+                         const expenditure = subsidy * qs_subsidy;
+                         const formula = `${subsidy.toFixed(0)} * ${qs_subsidy.toFixed(0)}`;
+                         calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-green-600">Govt Expenditure:</span> <span>${formatCurrency(expenditure)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                     if(wlToggle.checked) {
+                        hasContent = true;
+                        const wl = 0.5 * (qs_subsidy - qs_world) * subsidy;
+                        const formula = `0.5 * (${qs_subsidy.toFixed(0)} - ${qs_world.toFixed(0)}) * ${subsidy.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-red-600">Welfare Loss:</span> <span>${formatCurrency(wl)}</span></div><span class="text-xs text-gray-500 text-right break-all">Formula: ${formula}</span></div>`;
+                    }
+
+                    if(!hasContent) {
+                        calculationsDiv.innerHTML = '<p class="text-gray-400">Toggle an area to see details.</p>';
+                    }
+                }
+
+                subsidySlider.addEventListener('input', updateDiagram);
+                [csToggle, psToggle, govToggle, wlToggle].forEach(toggle => {
+                    toggle.addEventListener('change', updateDiagram);
+                });
+                updateDiagram();
+            }
+
+             // --- EXPORT SUBSIDY DIAGRAM SETUP ---
+            function setupExportSubsidyDiagram() {
+                const container = d3.select("#diagram-container-export-subsidy");
+                if (!container.node()) return;
+                const width = Math.min(600, container.node().getBoundingClientRect().width);
+                const height = width * 0.8;
+                const margin = { top: 20, right: 30, bottom: 80, left: 50 };
+
+                const svg = d3.select("#diagram-export-subsidy")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .style("max-width", "100%")
+                    .style("height", "auto");
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                const xScale = d3.scaleLinear().domain([0, 120]).range([0, chartWidth]);
+                const yScale = d3.scaleLinear().domain([0, 120]).range([chartHeight, 0]);
+
+                // Use S&D where Pw > Pe to ensure the country is an exporter
+                const demand = p => 110 - p; // Pe = 60
+                const supply = p => p - 10;   // Pe = 60
+                const worldPrice = 70; 
+
+                const subsidySlider = document.getElementById('exportSubsidySlider');
+                const subsidyValueSpan = document.getElementById('exportSubsidyValue');
+                const csToggle = document.getElementById('csToggleExportSubsidy');
+                const psToggle = document.getElementById('psToggleExportSubsidy');
+                const govToggle = document.getElementById('govToggleExportSubsidy');
+                const wlToggle = document.getElementById('wlToggleExportSubsidy');
+                const calculationsDiv = document.getElementById('calculationsExportSubsidy');
+
+                const xAxis = d3.axisBottom(xScale).ticks(6);
+                const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d => `$${d}`);
+                g.append("g").attr("transform", `translate(0,${chartHeight})`).call(xAxis);
+                g.append("g").call(yAxis);
+                g.append("text").attr("x", chartWidth).attr("y", chartHeight + 40).attr("text-anchor", "end").text("Quantity");
+                g.append("text")
+                    .attr("x", 5).attr("y", -8).attr("text-anchor", "start").text("Price");
+
+                // Curves
+                g.append("line").attr("x1", xScale(0)).attr("y1", yScale(110)).attr("x2", xScale(110)).attr("y2", yScale(0)).attr("stroke", "#3B82F6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(110)).attr("y", yScale(5)).text("D").attr("fill", "#3B82F6").attr("font-weight", "bold");
+                g.append("line").attr("x1", xScale(supply(10))).attr("y1", yScale(10)).attr("x2", xScale(supply(120))).attr("y2", yScale(120)).attr("stroke", "#8B5CF6").attr("stroke-width", 2);
+                g.append("text").attr("x", xScale(supply(115)) - 10).attr("y", yScale(115)).text("S").attr("fill", "#8B5CF6").attr("font-weight", "bold");
+
+                g.append("line").attr("x1", 0).attr("y1", yScale(worldPrice)).attr("x2", chartWidth).attr("y2", yScale(worldPrice)).attr("stroke", "#10B981").attr("stroke-width", 2);
+                g.append("text").attr("x", chartWidth).attr("y", yScale(worldPrice) - 5).text("World Supply").attr("fill", "#10B981").attr("font-size", "12px").attr("text-anchor", "end");
+                
+                const subsidizedPriceLine = g.append("line").attr("stroke", "#F59E0B").attr("stroke-width", 2);
+                const subsidizedPriceLabel = g.append("text").attr("fill", "#F59E0B").attr("font-size", "12px").text("Price with Subsidy (Pw+s)").attr("text-anchor", "end");
+
+                const subsidizedSupplyLine = g.append("line").attr("stroke", "#F59E0B").attr("stroke-width", 2);
+                const subsidizedSupplyLabel = g.append("text").attr("fill", "#F59E0B").attr("font-size", "14px").text("Ss").attr("font-weight", "bold");
+
+                const groupLines = g.append("g");
+                const groupAreas = g.append("g");
+
+                function updateDiagram() {
+                    const subsidy = +subsidySlider.value;
+                    subsidyValueSpan.textContent = subsidy.toFixed(2);
+                    const priceWithSubsidy = worldPrice + subsidy;
+
+                    const qd_world = demand(worldPrice);
+                    const qs_world = supply(worldPrice);
+                    const qd_subsidy = demand(priceWithSubsidy);
+                    const qs_subsidy = supply(priceWithSubsidy);
+
+                    subsidizedPriceLine.attr("x1", 0).attr("y1", yScale(priceWithSubsidy)).attr("x2", chartWidth).attr("y2", yScale(priceWithSubsidy)).attr("stroke-dasharray", "4,4");
+                    subsidizedPriceLabel.attr("x", chartWidth).attr("y", yScale(priceWithSubsidy) - 5);
+
+                    // Draw shifted supply curve
+                    let start_q, start_p;
+                    if (subsidy >= 10) { 
+                        start_q = subsidy - 10;
+                        start_p = 0;
+                    } else {
+                        start_q = 0;
+                        start_p = 10 - subsidy;
+                    }
+                    const end_q_s = supply(120); 
+                    const end_p_ss = 120 - subsidy;
+
+                    subsidizedSupplyLine
+                         .attr("x1", xScale(start_q))
+                         .attr("y1", yScale(start_p))
+                         .attr("x2", xScale(end_q_s))
+                         .attr("y2", yScale(end_p_ss));
+
+                    subsidizedSupplyLabel
+                        .attr("x", xScale(end_q_s) + 5)
+                        .attr("y", yScale(end_p_ss > 0 ? end_p_ss : 0));
+                    
+                    groupLines.selectAll("*").remove();
+                    groupAreas.selectAll("*").remove();
+                    
+                    // Lines for world price quantities
+                    groupLines.append("line").attr("x1", xScale(qd_world)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qd_world)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qd_world)).attr("y", chartHeight + 20).text(`${qd_world.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    
+                    groupLines.append("line").attr("x1", xScale(qs_world)).attr("y1", yScale(worldPrice)).attr("x2", xScale(qs_world)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_world)).attr("y", chartHeight + 20).text(`${qs_world.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+                    
+                    // Lines for subsidized price quantities
+                    groupLines.append("line").attr("x1", xScale(qd_subsidy)).attr("y1", yScale(priceWithSubsidy)).attr("x2", xScale(qd_subsidy)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qd_subsidy)).attr("y", chartHeight + 20).text(`${qd_subsidy.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+
+                    groupLines.append("line").attr("x1", xScale(qs_subsidy)).attr("y1", yScale(priceWithSubsidy)).attr("x2", xScale(qs_subsidy)).attr("y2", chartHeight).attr("stroke", "black").attr("stroke-width", 0.5).attr("stroke-dasharray", "3,3");
+                    groupLines.append("text").attr("x", xScale(qs_subsidy)).attr("y", chartHeight + 20).text(`${qs_subsidy.toFixed(0)}`).attr("text-anchor", "middle").attr("font-size", "12px");
+
+                    // Price labels on Y axis
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(worldPrice)+5).text(`$${worldPrice.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+                    groupLines.append("text").attr("x", -5).attr("y", yScale(priceWithSubsidy)+5).text(`$${priceWithSubsidy.toFixed(0)}`).attr("text-anchor", "end").attr("font-size", "12px");
+
+                    // --- Areas ---
+                    const pMax = 110;
+                    const supplyInverse = q => q - 10;
+
+                    // Consumer Surplus (triangle above Pw+s)
+                    const csPoints = [{x: xScale(0), y: yScale(pMax)}, {x: xScale(qd_subsidy), y: yScale(priceWithSubsidy)}, {x: xScale(0), y: yScale(priceWithSubsidy)}];
+                    groupAreas.append("polygon").attr("points", csPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#3B82F6").attr("opacity", csToggle.checked ? 0.3 : 0);
+                    
+                    // Producer Surplus (area above supply curve, below Pw+s)
+                    const psPoints = [{x: xScale(0), y: yScale(10)}, {x: xScale(qs_subsidy), y: yScale(priceWithSubsidy)}, {x: xScale(0), y: yScale(priceWithSubsidy)}];
+                    groupAreas.append("polygon").attr("points", psPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#8B5CF6").attr("opacity", psToggle.checked ? 0.3 : 0);
+
+                    // Government Expenditure (rectangle on exports)
+                    const exports = qs_subsidy - qd_subsidy;
+                    if (exports > 0) {
+                        const govPoints = [
+                            {x: xScale(qd_subsidy), y: yScale(worldPrice)},
+                            {x: xScale(qs_subsidy), y: yScale(worldPrice)},
+                            {x: xScale(qs_subsidy), y: yScale(priceWithSubsidy)},
+                            {x: xScale(qd_subsidy), y: yScale(priceWithSubsidy)}
+                        ];
+                        groupAreas.append("polygon").attr("points", govPoints.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#10B981").attr("opacity", govToggle.checked ? 0.4 : 0);
+                    }
+
+                    // Welfare Loss (two triangles, B and D from reference)
+                    // Triangle B (consumption distortion)
+                    const wl_b_points = [
+                        {x: xScale(qd_subsidy), y: yScale(priceWithSubsidy)},
+                        {x: xScale(qd_world), y: yScale(worldPrice)},
+                        {x: xScale(qd_subsidy), y: yScale(worldPrice)}
+                    ];
+                    groupAreas.append("polygon").attr("points", wl_b_points.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+
+                    // Triangle D (production distortion)
+                    const wl_d_points = [
+                        {x: xScale(qs_world), y: yScale(worldPrice)},
+                        {x: xScale(qs_subsidy), y: yScale(priceWithSubsidy)},
+                        {x: xScale(qs_subsidy), y: yScale(worldPrice)}
+                    ];
+                    groupAreas.append("polygon").attr("points", wl_d_points.map(p => `${p.x},${p.y}`).join(" ")).attr("fill", "#EF4444").attr("opacity", wlToggle.checked ? 0.4 : 0);
+
+                    updateCalculations();
+                }
+                
+                function updateCalculations() {
+                    const subsidy = +subsidySlider.value;
+                    const priceWithSubsidy = worldPrice + subsidy;
+                    const qd_world = demand(worldPrice);
+                    const qs_world = supply(worldPrice);
+                    const qd_subsidy = demand(priceWithSubsidy);
+                    const qs_subsidy = supply(priceWithSubsidy);
+                    
+                    calculationsDiv.innerHTML = '';
+                    let hasContent = false;
+                    const formatCurrency = (value) => `$${value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                    
+                    if(csToggle.checked) {
+                        hasContent = true;
+                        const cs = 0.5 * (110 - priceWithSubsidy) * qd_subsidy;
+                        const formula = `0.5 * (110 - ${priceWithSubsidy.toFixed(0)}) * ${qd_subsidy.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-blue-600">Consumer Surplus:</span> <span>${formatCurrency(cs)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(psToggle.checked) {
+                        hasContent = true;
+                        const ps = 0.5 * (priceWithSubsidy - 10) * qs_subsidy;
+                        const formula = `0.5 * (${priceWithSubsidy.toFixed(0)} - 10) * ${qs_subsidy.toFixed(0)}`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-purple-600">Producer Surplus:</span> <span>${formatCurrency(ps)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(govToggle.checked) {
+                        hasContent = true;
+                        const exports = qs_subsidy - qd_subsidy;
+                        const expenditure = exports > 0 ? subsidy * exports : 0;
+                        const formula = `${subsidy.toFixed(0)} * (${qs_subsidy.toFixed(0)} - ${qd_subsidy.toFixed(0)})`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-green-600">Govt Expenditure:</span> <span>${formatCurrency(expenditure)}</span></div><span class="text-xs text-gray-500 text-right">Formula: ${formula}</span></div>`;
+                    }
+                    if(wlToggle.checked) {
+                        hasContent = true;
+                        const wl_b = 0.5 * (qd_world - qd_subsidy) * subsidy;
+                        const wl_d = 0.5 * (qs_subsidy - qs_world) * subsidy;
+                        const totalWl = (wl_b > 0 ? wl_b : 0) + (wl_d > 0 ? wl_d : 0);
+                        const formula = `[0.5*(${qd_world.toFixed(0)}-${qd_subsidy.toFixed(0)})*${subsidy.toFixed(0)}] + [0.5*(${qs_subsidy.toFixed(0)}-${qs_world.toFixed(0)})*${subsidy.toFixed(0)}]`;
+                        calculationsDiv.innerHTML += `<div class="flex flex-col mb-2"><div class="flex justify-between items-center"><span class="font-medium text-red-600">Welfare Loss:</span> <span>${formatCurrency(totalWl)}</span></div><span class="text-xs text-gray-500 text-right break-all">Formula: ${formula}</span></div>`;
+
+                    }
+
+                    if(!hasContent) {
+                        calculationsDiv.innerHTML = '<p class="text-gray-400">Toggle an area to see details.</p>';
+                    }
+                }
+
+                subsidySlider.addEventListener('input', updateDiagram);
+                [csToggle, psToggle, govToggle, wlToggle].forEach(toggle => {
+                    toggle.addEventListener('change', updateDiagram);
+                });
+                updateDiagram();
+            }
+
+
+            // --- INITIALIZE ALL DIAGRAMS ---
+            setupTariffDiagram();
+            setupQuotaDiagram();
+            setupSubsidyDiagram();
+            setupExportSubsidyDiagram();
+
+            // Responsive resize for all
+            window.addEventListener('resize', () => {
+                document.getElementById('diagram-tariff').innerHTML = '';
+                document.getElementById('diagram-quota').innerHTML = '';
+                document.getElementById('diagram-subsidy').innerHTML = '';
+                document.getElementById('diagram-export-subsidy').innerHTML = '';
+                setupTariffDiagram();
+                setupQuotaDiagram();
+                setupSubsidyDiagram();
+                setupExportSubsidyDiagram();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Intervention Models</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .label { font-size: 12px; fill: #4A5568; }
+        .axis-label { font-size: 14px; font-weight: 500; fill: #2D3748; }
+        .equilibrium-dot { stroke: #4A5568; stroke-width: 1.5px; }
+        .equilibrium-line { stroke-dasharray: 4 2; stroke-width: 1px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col items-center min-h-screen pb-12">
+
+    <nav class="w-full bg-white shadow-sm border-b border-gray-200 p-4 mb-12 sticky top-0 z-50">
+        <div class="container mx-auto text-center space-x-6">
+            <a href="index.html" class="text-indigo-600 font-bold transition-colors">Govt Intervention</a>
+            
+            <a href="market_power.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">Market Power</a>
+            
+            <a href="international_trade.html" class="text-gray-600 hover:text-indigo-600 font-semibold transition-colors">International Trade</a>
+        </div>
+    </nav>
+
+
+    <!-- Diagram 1: Indirect Tax -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Indirect Tax</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the tax amount and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg:col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Tax Amount Slider -->
+                <div class="mb-6">
+                    <label for="taxSlider" class="block font-medium text-gray-700 mb-2">Tax Amount</label>
+                    <input type="range" id="taxSlider" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Tax: $<span id="taxValue">40.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Government Revenue</span>
+                             <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggle" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-tax" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-tax"></svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Diagram 2: Subsidy -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Subsidy</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the subsidy amount and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg:col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Subsidy Amount Slider -->
+                <div class="mb-6">
+                    <label for="subsidySlider" class="block font-medium text-gray-700 mb-2">Subsidy Amount</label>
+                    <input type="range" id="subsidySlider" min="0" max="100" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Subsidy: $<span id="subsidyValue">40.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleSub" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleSub" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Govt. Expenditure</span>
+                             <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggleSub" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleSub" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations-subsidy" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-subsidy" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-subsidy"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagram 3: Price Ceiling -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Price Ceiling</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the price ceiling and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg:col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Price Ceiling Slider -->
+                <div class="mb-6">
+                    <label for="ceilingSlider" class="block font-medium text-gray-700 mb-2">Price Ceiling</label>
+                    <input type="range" id="ceilingSlider" min="0" max="200" value="80" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Ceiling: $<span id="ceilingValue">80.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleCeiling" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleCeiling" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleCeiling" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations-ceiling" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-ceiling" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-ceiling"></svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Diagram 4: Price Floor -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Price Floor (Govt. Does Not Buy Surplus)</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the price floor and toggle the visibility of economic areas to see the impact.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg:col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Price Floor Slider -->
+                <div class="mb-6">
+                    <label for="floorSlider" class="block font-medium text-gray-700 mb-2">Price Floor</label>
+                    <input type="range" id="floorSlider" min="0" max="200" value="130" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Floor: $<span id="floorValue">130.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleFloor" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleFloor" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleFloor" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations-floor" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-floor" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-floor"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagram 5: Price Floor (Govt. Buys Surplus) -->
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">Price Floor (Govt. Buys Surplus)</h1>
+        <p class="text-center text-gray-600 mb-6">Adjust the price floor to see the impact on surpluses and government expenditure.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Controls Column -->
+            <div class="lg:col-span-1 bg-gray-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Controls</h2>
+
+                <!-- Price Floor Slider -->
+                <div class="mb-6">
+                    <label for="floorSliderGov" class="block font-medium text-gray-700 mb-2">Price Floor</label>
+                    <input type="range" id="floorSliderGov" min="0" max="200" value="130" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="text-center text-sm text-gray-600 mt-1">Floor: $<span id="floorValueGov">130.00</span></div>
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="mb-6">
+                    <h3 class="font-medium text-gray-700 mb-3">Display Areas</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Consumer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="csToggleFloorGov" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Producer Surplus</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="psToggleFloorGov" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Govt. Expenditure</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="govToggleFloorGov" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                         <div class="flex items-center justify-between bg-white p-3 rounded-md shadow-sm">
+                            <span class="font-medium">Welfare Loss</span>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="wlToggleFloorGov" class="sr-only peer">
+                                <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculations -->
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-3">Calculations</h3>
+                    <div id="calculations-floor-gov" class="space-y-3 text-sm bg-white p-4 rounded-lg shadow-sm min-h-[150px] transition-all">
+                        <p class="text-gray-400">Toggle an area to see details.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Diagram Column -->
+            <div id="diagram-container-floor-gov" class="lg:col-span-2 flex items-center justify-center min-h-[400px] md:min-h-[500px]">
+                <svg id="diagram-floor-gov"></svg>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- SCRIPT FOR DIAGRAM 1: INDIRECT TAX ---
+        (() => {
+            const container = document.getElementById('diagram-container-tax');
+            if (!container) return;
+            const svg = d3.select("#diagram-tax");
+            const taxSlider = document.getElementById("taxSlider");
+            const taxValueSpan = document.getElementById("taxValue");
+            const calculationsDiv = document.getElementById("calculations");
+
+            const toggles = {
+                cs: document.getElementById("csToggle"),
+                ps: document.getElementById("psToggle"),
+                gov: document.getElementById("govToggle"),
+                wl: document.getElementById("wlToggle")
+            };
+
+            const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+            let width, height;
+
+            const demand = q => 200 - 1.5 * q; 
+            const supply = q => 50 + 1.0 * q; 
+            let tax = +taxSlider.value;
+
+            const xScale = d3.scaleLinear().domain([0, 110]);
+            const yScale = d3.scaleLinear().domain([0, 220]);
+
+            function drawTax() {
+                const containerRect = container.getBoundingClientRect();
+                width = containerRect.width - margin.left - margin.right;
+                height = containerRect.height - margin.top - margin.bottom;
+                
+                svg.attr("width", containerRect.width).attr("height", containerRect.height);
+                xScale.range([0, width]);
+                yScale.range([height, 0]);
+
+                svg.selectAll("*").remove();
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+                const q1 = 150 / 2.5;
+                const p1 = supply(q1);
+                const q2 = (150 - tax) / 2.5;
+                const p2_consumer = demand(q2);
+                const p2_producer = supply(q2);
+
+                g.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(xScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+                g.append("g").call(d3.axisLeft(yScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width).attr("y", height + margin.bottom - 15).text("Quantity");
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", -margin.left + 20).attr("y", -5).text("Price");
+
+                const lineGenerator = d3.line().x(d => xScale(d.q)).y(d => yScale(d.p));
+                const q_range = d3.range(0, 105, 1);
+                const demandCurveData = q_range.map(q => ({q, p: demand(q)}));
+                const supplyCurveData = q_range.map(q => ({q, p: supply(q)}));
+                const supplyTaxCurveData = q_range.map(q => ({q, p: supply(q) + tax}));
+
+                g.append("path").datum(demandCurveData).attr("fill", "none").attr("stroke", "#4299E1").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                g.append("path").datum(supplyCurveData).attr("fill", "none").attr("stroke", "#48BB78").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                if (tax > 0) {
+                    g.append("path").datum(supplyTaxCurveData).attr("fill", "none").attr("stroke", "#F56565").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                }
+
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(demand(95))).attr("dy", "1.2em").attr("fill", "#4299E1").style("font-weight", "bold").text("D");
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95))).attr("dy", "-0.5em").attr("fill", "#48BB78").style("font-weight", "bold").text("S1");
+                if (tax > 0) {
+                    g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95) + tax)).attr("dy", "-0.5em").attr("fill", "#F56565").style("font-weight", "bold").text("S2 (S1+Tax)");
+                }
+
+                const areaGroup = g.append("g").attr("class", "areas");
+                let calculationsHTML = '';
+
+                if (toggles.cs.checked) {
+                    const cs_points = [{x: 0, y: demand(0)}];
+                    const current_q = tax > 0 ? q2 : q1;
+                    const current_p = tax > 0 ? p2_consumer : p1;
+                    cs_points.push({x: current_q, y: current_p}, {x: 0, y: current_p});
+                    areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                    const cs = 0.5 * current_q * (demand(0) - current_p);
+                    const cs_working = `½ × ${current_q.toFixed(2)} × (${demand(0).toFixed(2)} - ${current_p.toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-blue-600">CS:</strong> $${cs.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${cs_working})</span></div>`;
+                }
+
+                if (toggles.ps.checked) {
+                    const current_q = tax > 0 ? q2 : q1;
+                    const current_p = tax > 0 ? p2_producer : p1;
+                    const ps_points = [{x:0, y:supply(0)}, {x:current_q, y:current_p}, {x:0, y:current_p}];
+                    areaGroup.append("polygon").attr("points", ps_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+                    const ps = 0.5 * current_q * (current_p - supply(0));
+                    const ps_working = `½ × ${current_q.toFixed(2)} × (${current_p.toFixed(2)} - ${supply(0).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-green-600">PS:</strong> $${ps.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${ps_working})</span></div>`;
+                }
+
+                if (tax > 0 && toggles.gov.checked) {
+                    const gov_points = [{x: 0, y: p2_producer}, {x: q2, y: p2_producer}, {x: q2, y: p2_consumer}, {x: 0, y: p2_consumer}];
+                    areaGroup.append("polygon").attr("points", gov_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#A0AEC0").attr("opacity", 0.5);
+                    const gov_rev = tax * q2;
+                    const gov_working = `${tax.toFixed(2)} × ${q2.toFixed(2)}`;
+                    calculationsHTML += `<div><strong class="text-gray-600">Gov Rev:</strong> $${gov_rev.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${gov_working})</span></div>`;
+                }
+
+                if (tax > 0 && toggles.wl.checked) {
+                    const wl_points = [{x: q2, y: p2_producer}, {x: q1, y: p1}, {x: q2, y: p2_consumer}];
+                    areaGroup.append("polygon").attr("points", wl_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#FC8181").attr("opacity", 0.5);
+                    const wl = 0.5 * (q1 - q2) * tax;
+                    const wl_working = `½ × (${q1.toFixed(2)} - ${q2.toFixed(2)}) × ${tax.toFixed(2)}`;
+                    calculationsHTML += `<div><strong class="text-red-600">DWL:</strong> $${wl.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${wl_working})</span></div>`;
+                }
+
+                calculationsDiv.innerHTML = calculationsHTML || '<p class="text-gray-400">Toggle an area to see details.</p>';
+
+                const eqGroup = g.append("g");
+                const addEquilibrium = (q, p, color) => {
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(q)).attr("y1", yScale(0)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(0)).attr("y1", yScale(p)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", color).attr("cx", xScale(q)).attr("cy", yScale(p)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(0) - 10).attr("y", yScale(p)).attr("dy", ".35em").attr("text-anchor", "end").text(p.toFixed(2));
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(q)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q.toFixed(2));
+                }
+                
+                addEquilibrium(q1, p1, '#718096');
+
+                if (tax > 0) {
+                    addEquilibrium(q2, p2_consumer, '#E53E3E');
+                    const producerPriceColor = '#38A169';
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", producerPriceColor).attr("x1", xScale(0)).attr("y1", yScale(p2_producer)).attr("x2", xScale(q2)).attr("y2", yScale(p2_producer));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", producerPriceColor).attr("cx", xScale(q2)).attr("cy", yScale(p2_producer)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", producerPriceColor).attr("x", xScale(0) - 10).attr("y", yScale(p2_producer)).attr("dy", ".35em").attr("text-anchor", "end").text(p2_producer.toFixed(2));
+                }
+            }
+
+            taxSlider.addEventListener("input", (e) => {
+                tax = +e.target.value;
+                taxValueSpan.textContent = tax.toFixed(2);
+                drawTax();
+            });
+
+            Object.values(toggles).forEach(toggle => {
+                toggle.addEventListener("change", drawTax);
+            });
+
+            drawTax();
+            window.addEventListener('resize', drawTax);
+        })();
+
+
+        // --- SCRIPT FOR DIAGRAM 2: SUBSIDY ---
+        (() => {
+            const container = document.getElementById('diagram-container-subsidy');
+            if (!container) return;
+            const svg = d3.select("#diagram-subsidy");
+            const subsidySlider = document.getElementById("subsidySlider");
+            const subsidyValueSpan = document.getElementById("subsidyValue");
+            const calculationsDiv = document.getElementById("calculations-subsidy");
+
+            const toggles = {
+                cs: document.getElementById("csToggleSub"),
+                ps: document.getElementById("psToggleSub"),
+                gov: document.getElementById("govToggleSub"),
+                wl: document.getElementById("wlToggleSub")
+            };
+
+            const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+            let width, height;
+
+            const demand = q => 200 - 1.5 * q; 
+            const supply = q => 50 + 1.0 * q; 
+            let subsidy = +subsidySlider.value;
+
+            const xScale = d3.scaleLinear().domain([0, 110]);
+            const yScale = d3.scaleLinear().domain([0, 220]);
+
+            function drawSubsidy() {
+                const containerRect = container.getBoundingClientRect();
+                width = containerRect.width - margin.left - margin.right;
+                height = containerRect.height - margin.top - margin.bottom;
+                
+                svg.attr("width", containerRect.width).attr("height", containerRect.height);
+                xScale.range([0, width]);
+                yScale.range([height, 0]);
+
+                svg.selectAll("*").remove();
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const q1 = 150 / 2.5;
+                const p1 = supply(q1);
+                const q2 = (150 + subsidy) / 2.5;
+                const p2_consumer = demand(q2);
+                const p2_producer = supply(q2);
+
+                g.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(xScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+                g.append("g").call(d3.axisLeft(yScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width).attr("y", height + margin.bottom - 15).text("Quantity");
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", -margin.left + 20).attr("y", -5).text("Price");
+
+                const lineGenerator = d3.line().x(d => xScale(d.q)).y(d => yScale(d.p));
+                const q_range = d3.range(0, 105, 1);
+                const demandCurveData = q_range.map(q => ({q, p: demand(q)}));
+                const supplyCurveData = q_range.map(q => ({q, p: supply(q)}));
+                const supplySubsidyCurveData = q_range.map(q => ({q, p: supply(q) - subsidy}));
+
+                g.append("path").datum(demandCurveData).attr("fill", "none").attr("stroke", "#4299E1").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                g.append("path").datum(supplyCurveData).attr("fill", "none").attr("stroke", "#48BB78").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                if (subsidy > 0) {
+                    g.append("path").datum(supplySubsidyCurveData).attr("fill", "none").attr("stroke", "#38B2AC").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                }
+
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(demand(95))).attr("dy", "1.2em").attr("fill", "#4299E1").style("font-weight", "bold").text("D");
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95))).attr("dy", "-0.5em").attr("fill", "#48BB78").style("font-weight", "bold").text("S1");
+                if (subsidy > 0) {
+                    g.append("text").attr("x", xScale(90)).attr("y", yScale(supply(95) - subsidy)).attr("dy", "1.2em").attr("fill", "#38B2AC").style("font-weight", "bold").text("S2 (S1-Subsidy)");
+                }
+                
+                const areaGroup = g.append("g").attr("class", "areas");
+                let calculationsHTML = '';
+
+                if (toggles.cs.checked) {
+                    const current_q = subsidy > 0 ? q2 : q1;
+                    const current_p = subsidy > 0 ? p2_consumer : p1;
+                    const cs_points = [{x: 0, y: demand(0)}, {x: current_q, y: current_p}, {x: 0, y: current_p}];
+                    areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                    const cs = 0.5 * current_q * (demand(0) - current_p);
+                    const cs_working = `½ × ${current_q.toFixed(2)} × (${demand(0).toFixed(2)} - ${current_p.toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-blue-600">CS:</strong> $${cs.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${cs_working})</span></div>`;
+                }
+                
+                if (toggles.ps.checked) {
+                    const current_q = subsidy > 0 ? q2 : q1;
+                    const current_p = subsidy > 0 ? p2_producer : p1;
+                    const ps_points = [{x: 0, y: supply(0)}, {x: current_q, y: current_p}, {x: 0, y: current_p}];
+                    areaGroup.append("polygon").attr("points", ps_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+                    const ps = 0.5 * current_q * (current_p - supply(0));
+                    const ps_working = `½ × ${current_q.toFixed(2)} × (${current_p.toFixed(2)} - ${supply(0).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-green-600">PS:</strong> $${ps.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${ps_working})</span></div>`;
+                }
+                
+                if (subsidy > 0 && toggles.gov.checked) {
+                    const gov_points = [{x: 0, y: p2_consumer}, {x: q2, y: p2_consumer}, {x: q2, y: p2_producer}, {x: 0, y: p2_producer}];
+                    areaGroup.append("polygon").attr("points", gov_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#A0AEC0").attr("opacity", 0.5);
+                    const gov_exp = subsidy * q2;
+                    const gov_working = `${subsidy.toFixed(2)} × ${q2.toFixed(2)}`;
+                    calculationsHTML += `<div><strong class="text-gray-600">Govt. Exp:</strong> $${gov_exp.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${gov_working})</span></div>`;
+                }
+                
+                if (subsidy > 0 && toggles.wl.checked) {
+                    const wl_points = [{x: q1, y: p1}, {x: q2, y: p2_consumer}, {x: q2, y: p2_producer}];
+                    areaGroup.append("polygon").attr("points", wl_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#FC8181").attr("opacity", 0.5);
+                    const wl = 0.5 * (q2 - q1) * subsidy;
+                    const wl_working = `½ × (${q2.toFixed(2)} - ${q1.toFixed(2)}) × ${subsidy.toFixed(2)}`;
+                    calculationsHTML += `<div><strong class="text-red-600">DWL:</strong> $${wl.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${wl_working})</span></div>`;
+                }
+
+                calculationsDiv.innerHTML = calculationsHTML || '<p class="text-gray-400">Toggle an area to see details.</p>';
+
+                const eqGroup = g.append("g");
+                const addEquilibrium = (q, p, color) => {
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(q)).attr("y1", yScale(0)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(0)).attr("y1", yScale(p)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", color).attr("cx", xScale(q)).attr("cy", yScale(p)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(0) - 10).attr("y", yScale(p)).attr("dy", ".35em").attr("text-anchor", "end").text(p.toFixed(2));
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(q)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q.toFixed(2));
+                }
+
+                addEquilibrium(q1, p1, '#718096');
+
+                if (subsidy > 0) {
+                    addEquilibrium(q2, p2_consumer, '#E53E3E');
+                    const producerPriceColor = '#38A169';
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", producerPriceColor).attr("x1", xScale(0)).attr("y1", yScale(p2_producer)).attr("x2", xScale(q2)).attr("y2", yScale(p2_producer));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", producerPriceColor).attr("cx", xScale(q2)).attr("cy", yScale(p2_producer)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", producerPriceColor).attr("x", xScale(0) - 10).attr("y", yScale(p2_producer)).attr("dy", ".35em").attr("text-anchor", "end").text(p2_producer.toFixed(2));
+                }
+            }
+
+            subsidySlider.addEventListener("input", (e) => {
+                subsidy = +e.target.value;
+                subsidyValueSpan.textContent = subsidy.toFixed(2);
+                drawSubsidy();
+            });
+
+            Object.values(toggles).forEach(toggle => {
+                toggle.addEventListener("change", drawSubsidy);
+            });
+
+            drawSubsidy();
+            window.addEventListener('resize', drawSubsidy);
+        })();
+
+        // --- SCRIPT FOR DIAGRAM 3: PRICE CEILING ---
+        (() => {
+            const container = document.getElementById('diagram-container-ceiling');
+            if (!container) return;
+            const svg = d3.select("#diagram-ceiling");
+            const ceilingSlider = document.getElementById("ceilingSlider");
+            const ceilingValueSpan = document.getElementById("ceilingValue");
+            const calculationsDiv = document.getElementById("calculations-ceiling");
+
+            const toggles = {
+                cs: document.getElementById("csToggleCeiling"),
+                ps: document.getElementById("psToggleCeiling"),
+                wl: document.getElementById("wlToggleCeiling")
+            };
+
+            const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+            let width, height;
+
+            const demand = q => 200 - 1.5 * q; 
+            const supply = q => 50 + 1.0 * q; 
+            const supply_inv = p => p - 50;
+            const demand_inv = p => (200 - p) / 1.5;
+            let ceiling = +ceilingSlider.value;
+
+            const xScale = d3.scaleLinear().domain([0, 110]);
+            const yScale = d3.scaleLinear().domain([0, 220]);
+
+            function drawCeiling() {
+                const containerRect = container.getBoundingClientRect();
+                width = containerRect.width - margin.left - margin.right;
+                height = containerRect.height - margin.top - margin.bottom;
+                
+                svg.attr("width", containerRect.width).attr("height", containerRect.height);
+                xScale.range([0, width]);
+                yScale.range([height, 0]);
+
+                svg.selectAll("*").remove();
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const q1 = 150 / 2.5;
+                const p1 = supply(q1);
+
+                const is_effective = ceiling < p1;
+                const q_ceiling = is_effective ? supply_inv(ceiling) : q1;
+
+                g.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(xScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+                g.append("g").call(d3.axisLeft(yScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width).attr("y", height + margin.bottom - 15).text("Quantity");
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", -margin.left + 20).attr("y", -5).text("Price");
+
+                const lineGenerator = d3.line().x(d => xScale(d.q)).y(d => yScale(d.p));
+                const q_range = d3.range(0, 105, 1);
+                const demandCurveData = q_range.map(q => ({q, p: demand(q)}));
+                const supplyCurveData = q_range.map(q => ({q, p: supply(q)}));
+
+                g.append("path").datum(demandCurveData).attr("fill", "none").attr("stroke", "#4299E1").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                g.append("path").datum(supplyCurveData).attr("fill", "none").attr("stroke", "#48BB78").attr("stroke-width", 2.5).attr("d", lineGenerator);
+
+                if (is_effective) {
+                     g.append("line").attr("x1", 0).attr("y1", yScale(ceiling)).attr("x2", width).attr("y2", yScale(ceiling)).attr("stroke", "#DD6B20").attr("stroke-width", 2);
+                     g.append("text").attr("x", xScale(5)).attr("y", yScale(ceiling)).attr("dy", "-0.5em").attr("fill", "#DD6B20").style("font-weight", "bold").text("Price Ceiling");
+                }
+
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(demand(95))).attr("dy", "1.2em").attr("fill", "#4299E1").style("font-weight", "bold").text("D");
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95))).attr("dy", "-0.5em").attr("fill", "#48BB78").style("font-weight", "bold").text("S");
+                
+                const areaGroup = g.append("g").attr("class", "areas");
+                let calculationsHTML = '';
+
+                if (toggles.cs.checked) {
+                    let cs, cs_working;
+                    if (is_effective) {
+                        const cs_points = [
+                            {x: 0, y: demand(0)},
+                            {x: q_ceiling, y: demand(q_ceiling)},
+                            {x: q_ceiling, y: ceiling},
+                            {x: 0, y: ceiling}
+                        ];
+                        areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                        
+                        const parallelSideA = demand(0) - ceiling;
+                        const parallelSideB = demand(q_ceiling) - ceiling;
+                        cs = 0.5 * (parallelSideA + parallelSideB) * q_ceiling;
+                        cs_working = `½ × (${parallelSideA.toFixed(2)} + ${parallelSideB.toFixed(2)}) × ${q_ceiling.toFixed(2)}`;
+
+                    } else {
+                        const cs_points = [{x: 0, y: demand(0)}, {x: q1, y: p1}, {x: 0, y: p1}];
+                        areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                        cs = 0.5 * q1 * (demand(0) - p1);
+                        cs_working = `½ × ${q1.toFixed(2)} × (${demand(0).toFixed(2)} - ${p1.toFixed(2)})`;
+                    }
+                    calculationsHTML += `<div><strong class="text-blue-600">CS:</strong> $${cs.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${cs_working})</span></div>`;
+                }
+
+                if (toggles.ps.checked) {
+                    const current_q = is_effective ? q_ceiling : q1;
+                    const current_p = is_effective ? ceiling : p1;
+                    
+                    const ps_points = [{x: 0, y: supply(0)}, {x: current_q, y: supply(current_q)}, {x: 0, y: supply(current_q)}];
+                     areaGroup.append("polygon").attr("points", [
+                        {x:0, y:supply(0)}, 
+                        {x:current_q, y:supply(current_q)}, 
+                        {x:0, y:supply(0)}].map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+
+                    const ps = 0.5 * current_q * (supply(current_q) - supply(0));
+                    const ps_working = `½ × ${current_q.toFixed(2)} × (${supply(current_q).toFixed(2)} - ${supply(0).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-green-600">PS:</strong> $${ps.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${ps_working})</span></div>`;
+                }
+                
+                if (is_effective && toggles.wl.checked) {
+                    const wl_points = [
+                        {x: q_ceiling, y: supply(q_ceiling)},
+                        {x: q1, y: p1},
+                        {x: q_ceiling, y: demand(q_ceiling)}
+                    ];
+                    areaGroup.append("polygon").attr("points", wl_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#FC8181").attr("opacity", 0.5);
+                    const wl = 0.5 * (q1 - q_ceiling) * (demand(q_ceiling) - supply(q_ceiling));
+                    const wl_working = `½ × (${q1.toFixed(2)} - ${q_ceiling.toFixed(2)}) × (${demand(q_ceiling).toFixed(2)} - ${supply(q_ceiling).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-red-600">DWL:</strong> $${wl.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${wl_working})</span></div>`;
+                }
+
+                calculationsDiv.innerHTML = calculationsHTML || '<p class="text-gray-400">Toggle an area to see details.</p>';
+
+                const eqGroup = g.append("g");
+                const addEquilibrium = (q, p, color) => {
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(q)).attr("y1", yScale(0)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(0)).attr("y1", yScale(p)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", color).attr("cx", xScale(q)).attr("cy", yScale(p)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(0) - 10).attr("y", yScale(p)).attr("dy", ".35em").attr("text-anchor", "end").text(p.toFixed(2));
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(q)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q.toFixed(2));
+                }
+
+                addEquilibrium(q1, p1, '#718096');
+
+                if (is_effective) {
+                    addEquilibrium(q_ceiling, ceiling, '#DD6B20');
+
+                    const q_demanded_at_ceiling = demand_inv(ceiling);
+                    // Add point for quantity demanded
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", "#4299E1").attr("x1", xScale(q_demanded_at_ceiling)).attr("y1", yScale(0)).attr("x2", xScale(q_demanded_at_ceiling)).attr("y2", yScale(ceiling));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", "#4299E1").attr("cx", xScale(q_demanded_at_ceiling)).attr("cy", yScale(ceiling)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", "#4299E1").attr("x", xScale(q_demanded_at_ceiling)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q_demanded_at_ceiling.toFixed(2));
+
+                    // Add shortage indicator
+                    const shortageGroup = g.append('g');
+                    const yPos = yScale(ceiling / 2.5); 
+
+                    // Define arrow markers
+                    const defs = g.append('defs');
+                    
+                    // Right-pointing arrow
+                    defs.append('marker')
+                        .attr('id', 'arrow-right-ceiling')
+                        .attr('viewBox', '-0 -5 10 10')
+                        .attr('refX', 5)
+                        .attr('refY', 0)
+                        .attr('orient', 'auto')
+                        .attr('markerWidth', 5)
+                        .attr('markerHeight', 5)
+                      .append('svg:path')
+                        .attr('d', 'M0,-5L10,0L0,5')
+                        .attr('fill', '#c53030');
+
+                    // Left-pointing arrow
+                    defs.append('marker')
+                        .attr('id', 'arrow-left-ceiling')
+                        .attr('viewBox', '-0 -5 10 10')
+                        .attr('refX', 5)
+                        .attr('refY', 0)
+                        .attr('orient', 'auto')
+                        .attr('markerWidth', 5)
+                        .attr('markerHeight', 5)
+                      .append('svg:path')
+                        .attr('d', 'M10,-5L0,0L10,5') // Reversed path
+                        .attr('fill', '#c53030');
+
+
+                    // Double-sided arrow line
+                    shortageGroup.append('line')
+                        .attr('x1', xScale(q_ceiling))
+                        .attr('y1', yPos)
+                        .attr('x2', xScale(q_demanded_at_ceiling))
+                        .attr('y2', yPos)
+                        .attr('stroke', '#c53030')
+                        .attr('stroke-width', 1.5)
+                        .attr('marker-start', 'url(#arrow-left-ceiling)')
+                        .attr('marker-end', 'url(#arrow-right-ceiling)');
+
+                    const shortageValue = q_demanded_at_ceiling - q_ceiling;
+                    shortageGroup.append('text')
+                        .attr('x', xScale((q_ceiling + q_demanded_at_ceiling) / 2))
+                        .attr('y', yPos - 8)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#c53030')
+                        .style('font-size', '12px')
+                        .style('font-weight', 'bold')
+                        .text(`Shortage: ${shortageValue.toFixed(2)}`);
+                }
+            }
+
+            ceilingSlider.addEventListener("input", (e) => {
+                ceiling = +e.target.value;
+                ceilingValueSpan.textContent = ceiling.toFixed(2);
+                drawCeiling();
+            });
+
+            Object.values(toggles).forEach(toggle => {
+                toggle.addEventListener("change", drawCeiling);
+            });
+
+            drawCeiling();
+            window.addEventListener('resize', drawCeiling);
+        })();
+        
+        // --- SCRIPT FOR DIAGRAM 4: PRICE FLOOR ---
+        (() => {
+            const container = document.getElementById('diagram-container-floor');
+            if (!container) return;
+            const svg = d3.select("#diagram-floor");
+            const floorSlider = document.getElementById("floorSlider");
+            const floorValueSpan = document.getElementById("floorValue");
+            const calculationsDiv = document.getElementById("calculations-floor");
+
+            const toggles = {
+                cs: document.getElementById("csToggleFloor"),
+                ps: document.getElementById("psToggleFloor"),
+                wl: document.getElementById("wlToggleFloor")
+            };
+
+            const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+            let width, height;
+
+            const demand = q => 200 - 1.5 * q; 
+            const supply = q => 50 + 1.0 * q; 
+            const supply_inv = p => p - 50;
+            const demand_inv = p => (200 - p) / 1.5;
+            let floor = +floorSlider.value;
+
+            const xScale = d3.scaleLinear().domain([0, 110]);
+            const yScale = d3.scaleLinear().domain([0, 220]);
+
+            function drawFloor() {
+                const containerRect = container.getBoundingClientRect();
+                width = containerRect.width - margin.left - margin.right;
+                height = containerRect.height - margin.top - margin.bottom;
+                
+                svg.attr("width", containerRect.width).attr("height", containerRect.height);
+                xScale.range([0, width]);
+                yScale.range([height, 0]);
+
+                svg.selectAll("*").remove();
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const q1 = 150 / 2.5;
+                const p1 = supply(q1);
+
+                const is_effective = floor > p1;
+                const q_floor_traded = is_effective ? demand_inv(floor) : q1;
+
+                g.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(xScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+                g.append("g").call(d3.axisLeft(yScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width).attr("y", height + margin.bottom - 15).text("Quantity");
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", -margin.left + 20).attr("y", -5).text("Price");
+
+                const lineGenerator = d3.line().x(d => xScale(d.q)).y(d => yScale(d.p));
+                const q_range = d3.range(0, 105, 1);
+                const demandCurveData = q_range.map(q => ({q, p: demand(q)}));
+                const supplyCurveData = q_range.map(q => ({q, p: supply(q)}));
+
+                g.append("path").datum(demandCurveData).attr("fill", "none").attr("stroke", "#4299E1").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                g.append("path").datum(supplyCurveData).attr("fill", "none").attr("stroke", "#48BB78").attr("stroke-width", 2.5).attr("d", lineGenerator);
+
+                if (is_effective) {
+                     g.append("line").attr("x1", 0).attr("y1", yScale(floor)).attr("x2", width).attr("y2", yScale(floor)).attr("stroke", "#805AD5").attr("stroke-width", 2);
+                     g.append("text").attr("x", xScale(5)).attr("y", yScale(floor)).attr("dy", "-0.5em").attr("fill", "#805AD5").style("font-weight", "bold").text("Price Floor");
+                }
+
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(demand(95))).attr("dy", "1.2em").attr("fill", "#4299E1").style("font-weight", "bold").text("D");
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95))).attr("dy", "-0.5em").attr("fill", "#48BB78").style("font-weight", "bold").text("S");
+                
+                const areaGroup = g.append("g").attr("class", "areas");
+                let calculationsHTML = '';
+
+                if (toggles.cs.checked) {
+                    let cs, cs_working;
+                    const current_q = is_effective ? q_floor_traded : q1;
+                    const current_p = is_effective ? floor : p1;
+                    
+                    const cs_points = [{x: 0, y: demand(0)}, {x: current_q, y: current_p}, {x: 0, y: current_p}];
+                    areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                    cs = 0.5 * current_q * (demand(0) - current_p);
+                    cs_working = `½ × ${current_q.toFixed(2)} × (${demand(0).toFixed(2)} - ${current_p.toFixed(2)})`;
+                    
+                    calculationsHTML += `<div><strong class="text-blue-600">CS:</strong> $${cs.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${cs_working})</span></div>`;
+                }
+
+                if (toggles.ps.checked) {
+                    let ps, ps_working;
+                    if(is_effective) {
+                        const ps_points = [
+                            {x: 0, y: supply(0)},
+                            {x: q_floor_traded, y: supply(q_floor_traded)},
+                            {x: q_floor_traded, y: floor},
+                            {x: 0, y: floor}
+                        ];
+                        areaGroup.append("polygon").attr("points", ps_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+                        
+                        const rect_area = q_floor_traded * (floor - supply(q_floor_traded));
+                        const tri_area = 0.5 * q_floor_traded * (supply(q_floor_traded) - supply(0));
+                        ps = rect_area + tri_area;
+                        ps_working = `(${q_floor_traded.toFixed(2)}×(${floor.toFixed(2)}-${supply(q_floor_traded).toFixed(2)})) + (½×${q_floor_traded.toFixed(2)}×(${supply(q_floor_traded).toFixed(2)}-${supply(0).toFixed(2)}))`;
+                    } else {
+                        const ps_points = [{x: 0, y: supply(0)}, {x: q1, y: p1}, {x: 0, y: p1}];
+                        areaGroup.append("polygon").attr("points", ps_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+                        ps = 0.5 * q1 * (p1 - supply(0));
+                        ps_working = `½ × ${q1.toFixed(2)} × (${p1.toFixed(2)} - ${supply(0).toFixed(2)})`;
+                    }
+                    calculationsHTML += `<div><strong class="text-green-600">PS:</strong> $${ps.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">${ps_working}</span></div>`;
+                }
+                
+                if (is_effective && toggles.wl.checked) {
+                    const wl_points = [
+                        {x: q_floor_traded, y: supply(q_floor_traded)},
+                        {x: q1, y: p1},
+                        {x: q_floor_traded, y: demand(q_floor_traded)}
+                    ];
+                    areaGroup.append("polygon").attr("points", wl_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#FC8181").attr("opacity", 0.5);
+                    const wl = 0.5 * (q1 - q_floor_traded) * (demand(q_floor_traded) - supply(q_floor_traded));
+                    const wl_working = `½ × (${q1.toFixed(2)} - ${q_floor_traded.toFixed(2)}) × (${demand(q_floor_traded).toFixed(2)} - ${supply(q_floor_traded).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-red-600">DWL:</strong> $${wl.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${wl_working})</span></div>`;
+                }
+
+                calculationsDiv.innerHTML = calculationsHTML || '<p class="text-gray-400">Toggle an area to see details.</p>';
+
+                const eqGroup = g.append("g");
+                const addEquilibrium = (q, p, color) => {
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(q)).attr("y1", yScale(0)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(0)).attr("y1", yScale(p)).attr("x2", xScale(q)).attr("y2", yScale(p));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", color).attr("cx", xScale(q)).attr("cy", yScale(p)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(0) - 10).attr("y", yScale(p)).attr("dy", ".35em").attr("text-anchor", "end").text(p.toFixed(2));
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(q)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q.toFixed(2));
+                }
+
+                addEquilibrium(q1, p1, '#718096');
+
+                if (is_effective) {
+                    addEquilibrium(q_floor_traded, floor, '#805AD5');
+
+                    const q_supplied_at_floor = supply_inv(floor);
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", "#48BB78").attr("x1", xScale(q_supplied_at_floor)).attr("y1", yScale(0)).attr("x2", xScale(q_supplied_at_floor)).attr("y2", yScale(floor));
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", "#48BB78").attr("cx", xScale(q_supplied_at_floor)).attr("cy", yScale(floor)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", "#48BB78").attr("x", xScale(q_supplied_at_floor)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q_supplied_at_floor.toFixed(2));
+
+                    // Add surplus indicator
+                    const surplusGroup = g.append('g');
+                    const yPos = yScale(floor / 1.5); 
+
+                    const defs = g.append('defs');
+                    defs.append('marker').attr('id', 'arrow-right-floor').attr('viewBox', '-0 -5 10 10').attr('refX', 5).attr('refY', 0).attr('orient', 'auto').attr('markerWidth', 5).attr('markerHeight', 5).append('svg:path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#c53030');
+                    defs.append('marker').attr('id', 'arrow-left-floor').attr('viewBox', '-0 -5 10 10').attr('refX', 5).attr('refY', 0).attr('orient', 'auto').attr('markerWidth', 5).attr('markerHeight', 5).append('svg:path').attr('d', 'M10,-5L0,0L10,5').attr('fill', '#c53030');
+
+                    surplusGroup.append('line')
+                        .attr('x1', xScale(q_floor_traded))
+                        .attr('y1', yPos)
+                        .attr('x2', xScale(q_supplied_at_floor))
+                        .attr('y2', yPos)
+                        .attr('stroke', '#c53030')
+                        .attr('stroke-width', 1.5)
+                        .attr('marker-start', 'url(#arrow-left-floor)')
+                        .attr('marker-end', 'url(#arrow-right-floor)');
+
+                    const surplusValue = q_supplied_at_floor - q_floor_traded;
+                    surplusGroup.append('text')
+                        .attr('x', xScale((q_floor_traded + q_supplied_at_floor) / 2))
+                        .attr('y', yPos - 8)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#c53030')
+                        .style('font-size', '12px')
+                        .style('font-weight', 'bold')
+                        .text(`Surplus: ${surplusValue.toFixed(2)}`);
+                }
+            }
+
+            floorSlider.addEventListener("input", (e) => {
+                floor = +e.target.value;
+                floorValueSpan.textContent = floor.toFixed(2);
+                drawFloor();
+            });
+
+            Object.values(toggles).forEach(toggle => {
+                toggle.addEventListener("change", drawFloor);
+            });
+
+            drawFloor();
+            window.addEventListener('resize', drawFloor);
+        })();
+
+        // --- SCRIPT FOR DIAGRAM 5: PRICE FLOOR (GOVT. BUYS SURPLUS) ---
+        (() => {
+            const container = document.getElementById('diagram-container-floor-gov');
+            if (!container) return;
+            const svg = d3.select("#diagram-floor-gov");
+            const floorSlider = document.getElementById("floorSliderGov");
+            const floorValueSpan = document.getElementById("floorValueGov");
+            const calculationsDiv = document.getElementById("calculations-floor-gov");
+
+            const toggles = {
+                cs: document.getElementById("csToggleFloorGov"),
+                ps: document.getElementById("psToggleFloorGov"),
+                gov: document.getElementById("govToggleFloorGov"),
+                wl: document.getElementById("wlToggleFloorGov")
+            };
+
+            const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+            let width, height;
+
+            const demand = q => 200 - 1.5 * q; 
+            const supply = q => 50 + 1.0 * q; 
+            const supply_inv = p => p - 50;
+            const demand_inv = p => (200 - p) / 1.5;
+            let floor = +floorSlider.value;
+
+            const xScale = d3.scaleLinear().domain([0, 110]);
+            const yScale = d3.scaleLinear().domain([0, 220]);
+
+            function drawFloorGov() {
+                const containerRect = container.getBoundingClientRect();
+                width = containerRect.width - margin.left - margin.right;
+                height = containerRect.height - margin.top - margin.bottom;
+                
+                svg.attr("width", containerRect.width).attr("height", containerRect.height);
+                xScale.range([0, width]);
+                yScale.range([height, 0]);
+
+                svg.selectAll("*").remove();
+
+                const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+                
+                const q1 = 150 / 2.5;
+                const p1 = supply(q1);
+                const cs_old = 0.5 * q1 * (demand(0) - p1);
+                const ps_old = 0.5 * q1 * (p1 - supply(0));
+                const ts_old = cs_old + ps_old;
+
+                const is_effective = floor > p1;
+                const q_floor_demanded = is_effective ? demand_inv(floor) : q1;
+                const q_floor_supplied = is_effective ? supply_inv(floor) : q1;
+
+                g.append("g").attr("transform", `translate(0,${height})`).call(d3.axisBottom(xScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+                g.append("g").call(d3.axisLeft(yScale).ticks(5)).selectAll("path, line").style("stroke", "#CBD5E0");
+                g.selectAll(".tick text").style("fill", "#718096");
+
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "end").attr("x", width).attr("y", height + margin.bottom - 15).text("Quantity");
+                g.append("text").attr("class", "axis-label").attr("text-anchor", "start").attr("x", -margin.left + 20).attr("y", -5).text("Price");
+
+                const lineGenerator = d3.line().x(d => xScale(d.q)).y(d => yScale(d.p));
+                const q_range = d3.range(0, 105, 1);
+                const demandCurveData = q_range.map(q => ({q, p: demand(q)}));
+                const supplyCurveData = q_range.map(q => ({q, p: supply(q)}));
+
+                g.append("path").datum(demandCurveData).attr("fill", "none").attr("stroke", "#4299E1").attr("stroke-width", 2.5).attr("d", lineGenerator);
+                g.append("path").datum(supplyCurveData).attr("fill", "none").attr("stroke", "#48BB78").attr("stroke-width", 2.5).attr("d", lineGenerator);
+
+                if (is_effective) {
+                     g.append("line").attr("x1", 0).attr("y1", yScale(floor)).attr("x2", width).attr("y2", yScale(floor)).attr("stroke", "#805AD5").attr("stroke-width", 2);
+                     g.append("text").attr("x", xScale(5)).attr("y", yScale(floor)).attr("dy", "-0.5em").attr("fill", "#805AD5").style("font-weight", "bold").text("Price Floor");
+                }
+
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(demand(95))).attr("dy", "1.2em").attr("fill", "#4299E1").style("font-weight", "bold").text("D");
+                g.append("text").attr("x", xScale(95)).attr("y", yScale(supply(95))).attr("dy", "-0.5em").attr("fill", "#48BB78").style("font-weight", "bold").text("S");
+                
+                const areaGroup = g.append("g").attr("class", "areas");
+                let calculationsHTML = '';
+
+                if (toggles.cs.checked) {
+                    const current_q = is_effective ? q_floor_demanded : q1;
+                    const current_p = is_effective ? floor : p1;
+                    const cs_points = [{x: 0, y: demand(0)}, {x: current_q, y: current_p}, {x: 0, y: current_p}];
+                    areaGroup.append("polygon").attr("points", cs_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#63B3ED").attr("opacity", 0.4);
+                    const cs = 0.5 * current_q * (demand(0) - current_p);
+                    const cs_working = `½ × ${current_q.toFixed(2)} × (${demand(0).toFixed(2)} - ${current_p.toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-blue-600">CS:</strong> $${cs.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">(${cs_working})</span></div>`;
+                }
+
+                if (toggles.ps.checked) {
+                    const current_q = is_effective ? q_floor_supplied : q1;
+                    const current_p = is_effective ? floor : p1;
+                    const ps_points = [{x: 0, y: supply(0)}, {x: current_q, y: current_p}, {x: 0, y: current_p}];
+                    areaGroup.append("polygon").attr("points", ps_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#68D391").attr("opacity", 0.4);
+                    const ps = 0.5 * current_q * (current_p - supply(0));
+                    const ps_working = `½ × ${current_q.toFixed(2)} × (${current_p.toFixed(2)} - ${supply(0).toFixed(2)})`;
+                    calculationsHTML += `<div><strong class="text-green-600">PS:</strong> $${ps.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">${ps_working}</span></div>`;
+                }
+                
+                if (is_effective && toggles.gov.checked) {
+                    const surplus = q_floor_supplied - q_floor_demanded;
+                    const gov_exp = surplus * floor;
+                    const gov_points = [
+                        {x: q_floor_demanded, y: 0},
+                        {x: q_floor_supplied, y: 0},
+                        {x: q_floor_supplied, y: floor},
+                        {x: q_floor_demanded, y: floor}
+                    ];
+                    areaGroup.append("polygon").attr("points", gov_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" ")).attr("fill", "#A0AEC0").attr("opacity", 0.5);
+                    const gov_working = `(${q_floor_supplied.toFixed(2)} - ${q_floor_demanded.toFixed(2)}) × ${floor.toFixed(2)}`;
+                    calculationsHTML += `<div><strong class="text-gray-600">Govt. Exp:</strong> $${gov_exp.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">${gov_working}</span></div>`;
+                }
+                
+                if (is_effective && toggles.wl.checked) {
+    const wl_points = [];
+    const steps = 20;
+    const q_eq = q1;
+    const p_eq = p1; // p1 is the equilibrium price from your code
+
+    // --- Start of Shaded Area Definition (Corrected) ---
+    // We now explicitly define all corners to guarantee perfect alignment.
+
+    // 1. Define the two left-side corners.
+    wl_points.push({ x: q_floor_demanded, y: 0 });   // Bottom-left
+    wl_points.push({ x: q_floor_demanded, y: floor }); // Top-left
+
+    // 2. Trace the demand curve, but only the points *between* the corners.
+    if (q_floor_demanded > q_eq) {
+        const step_q_demand = (q_floor_demanded - q_eq) / steps;
+        // Loop from step 19 down to 1 to avoid duplicating the corners.
+        for (let i = steps - 1; i > 0; i--) {
+            const q = q_eq + i * step_q_demand;
+            wl_points.push({ x: q, y: demand(q) });
+        }
+    }
+
+    // 3. Explicitly add the equilibrium point as a corner.
+    wl_points.push({ x: q_eq, y: p_eq });
+
+    // 4. Trace the supply curve, but only the points *between* the corners.
+    if (q_floor_supplied > q_eq) {
+        const step_q_supply = (q_floor_supplied - q_eq) / steps;
+        // Loop from step 1 up to 19 to avoid duplicating the corners.
+        for (let i = 1; i < steps; i++) {
+            const q = q_eq + i * step_q_supply;
+            wl_points.push({ x: q, y: supply(q) });
+        }
+    }
+
+    // 5. Define the two right-side corners.
+    wl_points.push({ x: q_floor_supplied, y: floor }); // Top-right
+    wl_points.push({ x: q_floor_supplied, y: 0 });   // Bottom-right
+    
+    // --- End of Shaded Area Definition ---
+
+                    if(wl_points.length > 2) {
+                         areaGroup.append("polygon")
+                            .attr("points", wl_points.map(p => `${xScale(p.x)},${yScale(p.y)}`).join(" "))
+                            .attr("fill", "#FC8181")
+                            .attr("opacity", 0.5);
+                    }
+                    
+                    const cs_new = 0.5 * q_floor_demanded * (demand(0) - floor);
+                    const ps_new = 0.5 * q_floor_supplied * (floor - supply(0));
+                    const gov_exp = (q_floor_supplied - q_floor_demanded) * floor;
+                    const ts_new = cs_new + ps_new - gov_exp;
+                    const wl = ts_old - ts_new;
+                    const wl_working = `${ts_old.toFixed(2)} - (${cs_new.toFixed(2)} + ${ps_new.toFixed(2)} - ${gov_exp.toFixed(2)})`;
+
+                    calculationsHTML += `<div><strong class="text-red-600">DWL:</strong> $${wl.toFixed(2)} <br><span class="text-gray-500 text-xs font-mono">${wl_working}</span></div>`;
+                }
+
+                calculationsDiv.innerHTML = calculationsHTML || '<p class="text-gray-400">Toggle an area to see details.</p>';
+
+                const eqGroup = g.append("g");
+                const addEquilibrium = (q, p, color, dashed=false) => {
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(q)).attr("y1", yScale(0)).attr("x2", xScale(q)).attr("y2", yScale(p)).style("stroke-dasharray", dashed ? "4 2" : "none");
+                    eqGroup.append("line").attr("class", "equilibrium-line").attr("stroke", color).attr("x1", xScale(0)).attr("y1", yScale(p)).attr("x2", xScale(q)).attr("y2", yScale(p)).style("stroke-dasharray", dashed ? "4 2" : "none");
+                    eqGroup.append("circle").attr("class", "equilibrium-dot").attr("fill", color).attr("cx", xScale(q)).attr("cy", yScale(p)).attr("r", 5);
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(0) - 10).attr("y", yScale(p)).attr("dy", ".35em").attr("text-anchor", "end").text(p.toFixed(2));
+                    eqGroup.append("text").attr("class", "label").attr("fill", color).attr("x", xScale(q)).attr("y", yScale(0) + 15).attr("text-anchor", "middle").text(q.toFixed(2));
+                }
+
+                addEquilibrium(q1, p1, '#718096', true);
+
+                if (is_effective) {
+                    addEquilibrium(q_floor_demanded, floor, '#4299E1');
+                    addEquilibrium(q_floor_supplied, floor, '#48BB78');
+                }
+            }
+
+            floorSlider.addEventListener("input", (e) => {
+                floor = +e.target.value;
+                floorValueSpan.textContent = floor.toFixed(2);
+                drawFloorGov();
+            });
+
+            Object.values(toggles).forEach(toggle => {
+                toggle.addEventListener("change", drawFloorGov);
+            });
+
+            drawFloorGov();
+            window.addEventListener('resize', drawFloorGov);
+        })();
+    });
+</script>
+
+</body>
+</html>
